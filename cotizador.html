@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotizador · Grupo Sachman</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">GS</span>
+      Grupo Sachman
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Servicios</a>
+      <a href="cotizador.html" class="active">Cotizador</a>
+      <a href="mailto:ignacio.sachman@livcampus.com">Contacto</a>
+    </nav>
+    <a class="btn btn-primary" href="mailto:ignacio.sachman@livcampus.com">Hablar con un asesor</a>
+  </div>
+
+  <div class="container cotizador-page-header">
+    <h1>Arma tu paquete de servicios especializados</h1>
+    <p>Elige tu segmento y las áreas que necesitas. El fee mensual se calcula al instante.</p>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <div class="cotizador-layout">
+      <div>
+        <p class="step-label">Paso 1 &middot; Segmento</p>
+        <div class="segment-tabs" id="segment-tabs"></div>
+
+        <p class="step-label">Paso 2 &middot; Áreas de servicio</p>
+        <div class="area-grid" id="area-grid"></div>
+      </div>
+
+      <aside class="summary-card">
+        <span class="tier-pill" id="tier-pill">Selecciona al menos un área</span>
+        <h3>Resumen de tu cotización</h3>
+        <div id="summary-lines"></div>
+        <div class="summary-total">
+          <span>Fee mensual (+ IVA)</span>
+          <span class="amount" id="total-amount">$0 MXN</span>
+        </div>
+        <p class="summary-note" id="summary-note"></p>
+
+        <form id="contact-form" class="contact-form">
+          <p class="step-label" style="margin-top:10px;">Paso 3 &middot; Recibir propuesta</p>
+          <input type="text" id="f-name" placeholder="Nombre completo" required>
+          <input type="text" id="f-company" placeholder="Empresa (opcional)">
+          <input type="email" id="f-email" placeholder="Correo electrónico" required>
+          <span class="error-text" id="form-error">Revisa tu nombre y correo electrónico.</span>
+          <button type="submit" class="btn btn-primary" id="generate-btn">Generar cotización</button>
+        </form>
+      </aside>
+    </div>
+
+    <div id="result-box" class="card hidden" style="margin-top:24px;"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Grupo Sachman &middot; servicios especializados de personal con registro REPSE &middot; México / Estados Unidos</p>
+    <p>Cotización estimada, no vinculante. Sujeta a validación por un asesor antes de firmar contrato.</p>
+  </div>
+</footer>
+
+<script src="js/pricing-data.js"></script>
+<script src="js/cotizador.js"></script>
+</body>
+</html>

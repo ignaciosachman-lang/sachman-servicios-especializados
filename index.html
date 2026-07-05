@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupo Sachman · Servicios Especializados</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">GS</span>
+      Grupo Sachman
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Servicios</a>
+      <a href="cotizador.html">Cotizador</a>
+      <a href="mailto:ignacio.sachman@livcampus.com">Contacto</a>
+    </nav>
+    <a class="btn btn-primary" href="cotizador.html">Cotizar ahora</a>
+  </div>
+
+  <div class="container hero">
+    <p class="eyebrow">Servicios especializados · REPSE</p>
+    <h1>Contabilidad, administración, RRHH, sistemas, compras y ventas — en un solo proveedor.</h1>
+    <p>Grupo Sachman opera como proveedor de servicios especializados de personal (REPSE) para que tu empresa se enfoque en su negocio. Diseñamos el paquete exacto que necesitas, sin pagar por lo que no usas.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="cotizador.html">Armar mi paquete</a>
+      <a class="btn btn-outline" href="#areas">Ver áreas de servicio</a>
+    </div>
+  </div>
+</header>
+
+<section class="segments-strip">
+  <div class="container">
+    <h2 class="section-title">Un modelo para cada tamaño de operación</h2>
+    <p class="section-sub">Mismos servicios, precios y alcance ajustados a tu etapa. Persona física, PyME o gran empresa.</p>
+    <div class="segments-grid" id="segments-preview"></div>
+  </div>
+</section>
+
+<section id="areas">
+  <div class="container">
+    <h2 class="section-title">Áreas de servicio</h2>
+    <p class="section-sub">Todas nuestras áreas se contratan bajo la modalidad de servicios especializados. Elige solo las que necesitas.</p>
+    <div class="grid-services" id="areas-grid"></div>
+  </div>
+</section>
+
+<section style="background:#fff; border-top:1px solid var(--border);">
+  <div class="container" style="text-align:center;">
+    <h2 class="section-title">¿Listo para armar tu paquete?</h2>
+    <p class="section-sub" style="margin-left:auto; margin-right:auto;">El cotizador calcula tu fee mensual estimado en tiempo real, según el segmento y las áreas que elijas.</p>
+    <a class="btn btn-primary" href="cotizador.html">Ir al cotizador</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Grupo Sachman &middot; servicios especializados de personal con registro REPSE &middot; México / Estados Unidos</p>
+    <p><a href="mailto:ignacio.sachman@livcampus.com">ignacio.sachman@livcampus.com</a> &middot; Propuesta de estructura básica, sujeta a validación de marca, precios y condiciones comerciales.</p>
+  </div>
+</footer>
+
+<script src="js/pricing-data.js"></script>
+<script>
+  const segPreviewEl = document.getElementById("segments-preview");
+  Object.values(SEGMENTS).forEach(function (seg) {
+    const minPrice = Math.min.apply(null, AREAS.map(function (a) { return a.price[seg.id]; }));
+    const card = document.createElement("div");
+    card.className = "segment-card";
+    card.innerHTML =
+      "<h3>" + seg.label + "</h3>" +
+      "<p>" + seg.tag + "</p>" +
+      '<div class="from">Desde ' + formatMXN(minPrice) + "/mes por área</div>";
+    segPreviewEl.appendChild(card);
+  });
+
+  const areasGridEl = document.getElementById("areas-grid");
+  AREAS.forEach(function (area) {
+    const card = document.createElement("div");
+    card.className = "card";
+    const isNew = area.id === "compras" || area.id === "ventas";
+    card.innerHTML =
+      '<div class="icon"><i class="ti ' + area.icon + '" aria-hidden="true"></i></div>' +
+      "<h3>" + area.label + (isNew ? '<span class="badge-new">Nueva</span>' : "") + "</h3>" +
+      "<p>" + area.description + "</p>";
+    areasGridEl.appendChild(card);
+  });
+</script>
+</body>
+</html>
