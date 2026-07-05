@@ -58,25 +58,32 @@ const AREAS = [
     price: { pf: 650, pyme: 7850, grande: 33000 }
   },
   {
+    // Grande ajustado manualmente: el costeo daba $10,100, pero se decidió mantener $25,000
+    // (criterio de negocio, no de costo/hora).
     id: "compras",
     label: "Compras",
     icon: "ti-shopping-cart",
     description: "Sourcing de proveedores, negociación y órdenes de compra.",
-    price: { pf: 500, pyme: 4300, grande: 10100 }
+    price: { pf: 500, pyme: 4300, grande: 25000 }
   },
   {
+    // Incluye comisión variable sobre ventas generadas, además del fee fijo mensual.
     id: "ventas",
     label: "Ventas / Representaciones comerciales",
     icon: "ti-trending-up",
     description: "Representación comercial, canal y seguimiento a clientes.",
-    price: { pf: 650, pyme: 5800, grande: 18800 }
+    price: { pf: 650, pyme: 5800, grande: 18000 },
+    commission: 0.05
   },
   {
+    // Ajustado a tarifa de despacho/agencia independiente promedio de mercado
+    // (no al modelo de costeo interno): freelance/agencia PF ~$3,000, retainer PyME
+    // $15,000-$30,000 (punto medio ~$20,000), escalado a Gran empresa ~$45,000.
     id: "marketing",
     label: "Marketing y Redes",
     icon: "ti-speakerphone",
     description: "Redes sociales, contenido, publicidad digital y SEO.",
-    price: { pf: 1300, pyme: 7050, grande: 21200 }
+    price: { pf: 3000, pyme: 20000, grande: 45000 }
   }
 ];
 

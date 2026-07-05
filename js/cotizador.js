@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentSegment = "pyme";
   const selectedAreas = new Set(["contabilidad", "administracion"]);
 
+  function commissionNote(area) {
+    return area.commission ? " + " + Math.round(area.commission * 100) + "% comisión sobre ventas" : "";
+  }
+
   function renderSegments() {
     segmentTabsEl.innerHTML = "";
     Object.values(SEGMENTS).forEach(function (seg) {
@@ -43,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "</div>" +
         "<h4>" + area.label + "</h4>" +
         '<p class="desc">' + area.description + "</p>" +
-        '<div class="price">' + formatMXN(area.price[currentSegment]) + "/mes</div>";
+        '<div class="price">' + formatMXN(area.price[currentSegment]) + "/mes" + commissionNote(area) + "</div>";
       card.addEventListener("click", function () {
         if (selectedAreas.has(area.id)) {
           selectedAreas.delete(area.id);
@@ -79,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     areas.forEach(function (a) {
       const line = document.createElement("div");
       line.className = "summary-line";
-      line.innerHTML = "<span>" + a.label + "</span><span>" + formatMXN(a.price[currentSegment]) + "</span>";
+      line.innerHTML = "<span>" + a.label + "</span><span>" + formatMXN(a.price[currentSegment]) + commissionNote(a) + "</span>";
       summaryLinesEl.appendChild(line);
     });
     if (coordApplies) {
@@ -121,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tier = tierFromCount(areas.length);
 
     const lines = areas.map(function (a) {
-      return "- " + a.label + ": " + formatMXN(a.price[currentSegment]) + "/mes";
+      return "- " + a.label + ": " + formatMXN(a.price[currentSegment]) + "/mes" + commissionNote(a);
     });
     if (coordApplies) lines.push("- Coordinación y gobernanza: " + formatMXN(seg.coordFee) + "/mes");
 
