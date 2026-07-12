@@ -36,18 +36,21 @@ const AREAS = [
     price: { pf: 1650, pyme: 9900, grande: 40590 }
   },
   {
+    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($8,488) para
+    // dejar margen real, no solo cubrir costo fijo.
     id: "administracion",
     label: "Administración",
     icon: "ti-clipboard-list",
     description: "Tesorería, cuentas por pagar/cobrar, facturación y KPIs.",
-    price: { pf: 1000, pyme: 7370, grande: 28490 }
+    price: { pf: 1000, pyme: 11000, grande: 28490 }
   },
   {
+    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($8,488).
     id: "rrhh",
     label: "RRHH",
     icon: "ti-users",
     description: "Nómina, altas/bajas IMSS, reclutamiento y liquidaciones.",
-    price: { pf: 1000, pyme: 7370, grande: 31570 }
+    price: { pf: 1000, pyme: 11000, grande: 31570 }
   },
   {
     id: "sistemas",
@@ -59,19 +62,22 @@ const AREAS = [
   {
     // Grande ajustado manualmente: el costeo daba $10,100, pero se decidió mantener el precio de negocio
     // (criterio de mercado, no de costo/hora), + 10% general.
+    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($5,658).
     id: "compras",
     label: "Compras",
     icon: "ti-shopping-cart",
     description: "Sourcing de proveedores, negociación y órdenes de compra.",
-    price: { pf: 1000, pyme: 4730, grande: 27500 }
+    price: { pf: 1000, pyme: 11000, grande: 27500 }
   },
   {
     // Incluye comisión variable sobre ventas generadas, además del fee fijo mensual.
+    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($7,544) y del
+    // sueldo bruto de un asesor comercial interno ($9,000-12,800).
     id: "ventas",
     label: "Ventas / Representaciones comerciales",
     icon: "ti-trending-up",
     description: "Representación comercial, canal y seguimiento a clientes.",
-    price: { pf: 1000, pyme: 6380, grande: 19800 },
+    price: { pf: 1000, pyme: 11000, grande: 19800 },
     commission: 0.05
   },
   {
