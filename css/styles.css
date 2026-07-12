@@ -401,3 +401,174 @@ form.contact-form input, form.contact-form select {
 }
 
 .hidden { display: none !important; }
+
+/* ---------- Landing (embudo) ---------- */
+
+.nav-links a.cta-secondary {
+  color: #9fb0c2;
+  font-size: 13px;
+}
+
+.section-dark {
+  background: var(--navy);
+  color: #fff;
+}
+.section-dark .section-title { color: #fff; }
+.section-dark .section-sub { color: #cdd8e3; }
+
+.section-alt {
+  background: #fff;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.centered { text-align: center; }
+.centered .section-sub { margin-left: auto; margin-right: auto; }
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.pain-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  padding: 20px 22px;
+}
+.pain-card p { margin: 0; font-size: 15px; color: var(--text); }
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.cost-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+}
+.cost-card .cost-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--teal); font-weight: 700; margin: 0 0 8px; }
+.cost-card p.desc { margin: 0; color: #cdd8e3; font-size: 14px; }
+
+.solucion-block {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+.solucion-block p.lead { font-size: 19px; color: var(--text); margin: 0; line-height: 1.6; }
+.solucion-block p.lead strong { color: var(--navy); }
+
+.metodologia-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  counter-reset: step;
+}
+
+.metodologia-step {
+  position: relative;
+  padding: 24px 20px 20px;
+  border-top: 3px solid var(--teal);
+  background: #fff;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.metodologia-step .step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.metodologia-step h3 { margin: 0 0 6px; font-size: 16px; }
+.metodologia-step p { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+.beneficios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.beneficio-card {
+  display: flex;
+  gap: 14px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.beneficio-card .icon {
+  flex-shrink: 0;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  background: #e7f6f3;
+  color: var(--teal-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.beneficio-card h3 { margin: 0 0 4px; font-size: 15px; }
+.beneficio-card p { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+.proof-placeholder {
+  background: #fff;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.oferta-section {
+  background: var(--navy);
+  color: #fff;
+}
+
+.oferta-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .oferta-layout { grid-template-columns: 1fr; }
+}
+
+.oferta-layout h2 { color: #fff; }
+.oferta-layout .section-sub { color: #cdd8e3; }
+
+.oferta-list { margin: 20px 0 0; padding: 0; list-style: none; }
+.oferta-list li { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; color: #dbe4ec; }
+.oferta-list li i { color: var(--teal); flex-shrink: 0; margin-top: 2px; }
+
+.lead-form-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  color: var(--text);
+}
+.lead-form-card h3 { margin: 0 0 4px; font-size: 17px; }
+.lead-form-card p.sub { margin: 0 0 16px; font-size: 13px; color: var(--text-muted); }
+
+.cta-final {
+  text-align: center;
+  padding: 64px 0;
+}
+.cta-final h2 { font-size: 28px; margin: 0 0 12px; }
+.cta-final p { color: var(--text-muted); max-width: 520px; margin: 0 auto 24px; }
