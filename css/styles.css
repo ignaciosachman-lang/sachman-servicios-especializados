@@ -516,6 +516,16 @@ form.contact-form input, form.contact-form select {
 .solucion-block p.lead { font-size: 19px; color: var(--text); margin: 0; line-height: 1.6; }
 .solucion-block p.lead strong { color: var(--navy); }
 
+.solucion-block p.lead-note {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin: 20px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  line-height: 1.6;
+}
+.solucion-block p.lead-note strong { color: var(--teal-dark); }
+
 .metodologia-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
