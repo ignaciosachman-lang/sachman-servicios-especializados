@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const summaryLinesEl = document.getElementById("summary-lines");
   const totalAmountEl = document.getElementById("total-amount");
   const summaryNoteEl = document.getElementById("summary-note");
+  const savingsNoteEl = document.getElementById("savings-note");
+  const annualToggle = document.getElementById("annual-toggle");
   const form = document.getElementById("contact-form");
   const generateBtn = document.getElementById("generate-btn");
   const resultBox = document.getElementById("result-box");
@@ -12,6 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let currentSegment = "pyme";
   const selectedAreas = new Set(["contabilidad", "administracion"]);
+
+  function isAnnual() {
+    return !!(annualToggle && annualToggle.checked);
+  }
 
   function commissionNote(area) {
     return area.commission ? " + " + Math.round(area.commission * 100) + "% comisión sobre ventas" : "";
@@ -36,8 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function renderAreas() {
     areaGridEl.innerHTML = "";
+    const selectedCount = selectedAreas.size;
     AREAS.forEach(function (area) {
       const active = selectedAreas.has(area.id);
+      // Si ya está seleccionada, el precio usa el conteo actual; si no, muestra el precio
+      // que tendría TODO el paquete (incluida esta) si la agregas ahora.
+      const previewCount = active ? Math.max(selectedCount, 1) : selectedCount + 1;
+      const price = areaPrice(area, currentSegment, previewCount, isAnnual());
       const card = document.createElement("div");
       card.className = "area-card" + (active ? " active" : "");
       card.innerHTML =
@@ -47,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "</div>" +
         "<h4>" + area.label + "</h4>" +
         '<p class="desc">' + area.description + "</p>" +
-        '<div class="price">' + formatMXN(area.price[currentSegment]) + "/mes" + commissionNote(area) + "</div>";
+        '<div class="price">' + formatMXN(price) + "/mes" + commissionNote(area) + "</div>";
       card.addEventListener("click", function () {
         if (selectedAreas.has(area.id)) {
           selectedAreas.delete(area.id);
@@ -68,34 +79,42 @@ document.addEventListener("DOMContentLoaded", function () {
   function computeTotal() {
     const seg = SEGMENTS[currentSegment];
     const areas = getSelectedAreaObjects();
+    const count = areas.length;
+    const annual = isAnnual();
     let subtotal = 0;
-    areas.forEach(function (a) { subtotal += a.price[currentSegment]; });
-    const coordApplies = areas.length >= seg.coordThreshold;
-    const total = subtotal + (coordApplies ? seg.coordFee : 0);
-    return { seg, areas, subtotal, coordApplies, total };
+    let fullPriceNoDiscount = 0;
+    areas.forEach(function (a) {
+      subtotal += areaPrice(a, currentSegment, count, annual);
+      fullPriceNoDiscount += areaBasePrice(a, currentSegment);
+    });
+    const coordApplies = count >= seg.coordThreshold;
+    const coordFee = coordApplies ? coordFeeAmount(currentSegment, annual) : 0;
+    const total = subtotal + coordFee;
+    const savings = (fullPriceNoDiscount + (coordApplies ? seg.coordFee : 0)) - total;
+    return { seg, areas, subtotal, coordApplies, coordFee, total, count, annual, savings };
   }
 
   function updateSummary() {
-    const { seg, areas, coordApplies, total } = computeTotal();
-    const count = areas.length;
+    const { seg, areas, coordApplies, coordFee, total, count, annual, savings } = computeTotal();
 
     summaryLinesEl.innerHTML = "";
     areas.forEach(function (a) {
+      const price = areaPrice(a, currentSegment, count, annual);
       const line = document.createElement("div");
       line.className = "summary-line";
-      line.innerHTML = "<span>" + a.label + "</span><span>" + formatMXN(a.price[currentSegment]) + commissionNote(a) + "</span>";
+      line.innerHTML = "<span>" + a.label + "</span><span>" + formatMXN(price) + commissionNote(a) + "</span>";
       summaryLinesEl.appendChild(line);
     });
     if (coordApplies) {
       const line = document.createElement("div");
       line.className = "summary-line";
-      line.innerHTML = "<span>Coordinación y gobernanza</span><span>" + formatMXN(seg.coordFee) + "</span>";
+      line.innerHTML = "<span>Coordinación y gobernanza</span><span>" + formatMXN(coordFee) + "</span>";
       summaryLinesEl.appendChild(line);
     }
 
     const tier = tierFromCount(count);
     tierPillEl.textContent = tier ? tier + " · " + count + (count === 1 ? " área" : " áreas") : "Selecciona al menos un área";
-    totalAmountEl.textContent = formatMXN(total);
+    totalAmountEl.textContent = formatMXN(total) + (annual ? "/mes (pago anual)" : "/mes");
 
     if (count === 0) {
       summaryNoteEl.textContent = "Elige una o más áreas para calcular tu cotización.";
@@ -105,7 +124,26 @@ document.addEventListener("DOMContentLoaded", function () {
       summaryNoteEl.textContent = "Incluye coordinador de cuenta único y reporte mensual de servicio.";
     }
 
+    if (savingsNoteEl) {
+      if (count > 1 && savings > 1) {
+        savingsNoteEl.textContent = "Ahorras " + formatMXN(savings) + "/mes vs. contratar cada área por separado" + (annual ? " (incluye el 5% de pago anual)." : ". Activa pago anual para un 5% adicional.");
+        savingsNoteEl.style.display = "block";
+      } else if (count === 1 && !annual) {
+        savingsNoteEl.textContent = "Agrega más áreas o activa el pago anual para desbloquear descuentos.";
+        savingsNoteEl.style.display = "block";
+      } else {
+        savingsNoteEl.style.display = "none";
+      }
+    }
+
     generateBtn.disabled = count === 0;
+  }
+
+  if (annualToggle) {
+    annualToggle.addEventListener("change", function () {
+      renderAreas();
+      updateSummary();
+    });
   }
 
   form.addEventListener("submit", function (e) {
@@ -121,26 +159,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     errorText.style.display = "none";
 
-    const { seg, areas, coordApplies, total } = computeTotal();
-    const tier = tierFromCount(areas.length);
+    const { seg, areas, coordApplies, coordFee, total, count, annual, savings } = computeTotal();
+    const tier = tierFromCount(count);
 
     const lines = areas.map(function (a) {
-      return "- " + a.label + ": " + formatMXN(a.price[currentSegment]) + "/mes" + commissionNote(a);
+      return "- " + a.label + ": " + formatMXN(areaPrice(a, currentSegment, count, annual)) + "/mes" + commissionNote(a);
     });
-    if (coordApplies) lines.push("- Coordinación y gobernanza: " + formatMXN(seg.coordFee) + "/mes");
+    if (coordApplies) lines.push("- Coordinación y gobernanza: " + formatMXN(coordFee) + "/mes");
 
     const bodyLines = [
       "Segmento: " + seg.label,
       "Paquete sugerido: " + tier,
+      "Modalidad de pago: " + (annual ? "Anual (-5% adicional)" : "Mensual"),
       "Áreas contratadas:",
       lines.join("\n"),
       "",
       "Fee mensual estimado (+ IVA): " + formatMXN(total),
+      count > 1 ? "Ahorro vs. precio individual: " + formatMXN(savings) + "/mes" : "",
       "",
       "Nombre: " + name,
       "Empresa: " + (company || "N/A"),
       "Correo: " + email
-    ];
+    ].filter(function (l) { return l !== ""; });
     const body = bodyLines.join("\n");
 
     resultBox.classList.remove("hidden");

@@ -417,6 +417,29 @@ footer.site-footer a { color: #cdd8e3; text-decoration: none; }
 .summary-total .amount { font-size: 26px; font-weight: 700; color: var(--navy); }
 .summary-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
 
+.savings-note {
+  font-size: 12px;
+  color: var(--teal-dark);
+  font-weight: 600;
+  margin-top: 6px;
+  display: none;
+}
+
+.annual-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin: 12px 0 16px;
+  cursor: pointer;
+}
+.annual-toggle input { cursor: pointer; }
+
 .tier-pill {
   display: inline-block;
   font-size: 12px;

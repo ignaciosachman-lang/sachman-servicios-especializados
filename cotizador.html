@@ -43,12 +43,17 @@
       <aside class="summary-card">
         <span class="tier-pill" id="tier-pill">Selecciona al menos un área</span>
         <h3>Resumen de tu cotización</h3>
+        <label class="annual-toggle">
+          <input type="checkbox" id="annual-toggle">
+          Pago anual <span class="badge-new" style="margin-left:0;">-5% adicional</span>
+        </label>
         <div id="summary-lines"></div>
         <div class="summary-total">
           <span>Fee mensual (+ IVA)</span>
           <span class="amount" id="total-amount">$0 MXN</span>
         </div>
         <p class="summary-note" id="summary-note"></p>
+        <p class="savings-note" id="savings-note"></p>
 
         <form id="contact-form" class="contact-form">
           <p class="step-label" style="margin-top:10px;">Paso 3 &middot; Recibir propuesta</p>

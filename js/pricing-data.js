@@ -1,13 +1,21 @@
-// Datos base de segmentos, áreas y precios de referencia.
-// Precios base del modelo de costeo (Plan_Costeo_Precios_Servicios_Especializados.xlsx),
-// +10% de ajuste general, con un piso de $1,000 MXN para cualquier servicio individual (+ IVA).
-// Ajustar horas/sueldos en el Excel y volver a correr esta actualización si cambian los supuestos.
+// Modelo de precios homologados con descuento progresivo por paquete + descuento por pago anual.
+// Definido directamente por el usuario (2026-07):
+// - Precio individual por área (1 sola área contratada) y precio "piso" al contratar las 7 áreas.
+// - El descuento crece de forma LINEAL según cuántas áreas contrates: 1 área = 0% descuento,
+//   7 áreas = descuento máximo del segmento. Cada área adicional reduce el precio de todas
+//   las áreas contratadas de forma pareja.
+// - Pago anual: -5% adicional sobre el precio que resulte (individual o con descuento de paquete).
+// - Marketing tiene precio base más alto en Persona física y PyME; en Gran empresa está
+//   unificado con el resto de las áreas (mismo precio base, mismo descuento).
 
 const SEGMENTS = {
   pf: {
     id: "pf",
     label: "Persona física",
     tag: "Profesionistas independientes, honorarios, RESICO",
+    basePrice: 2500,
+    marketingBasePrice: 4000,
+    maxBundleDiscount: 0.20,
     coordFee: 1000,
     coordThreshold: 3
   },
@@ -15,6 +23,9 @@ const SEGMENTS = {
     id: "pyme",
     label: "PyME",
     tag: "Empresas pequeñas y medianas en crecimiento",
+    basePrice: 15000,
+    marketingBasePrice: 30000,
+    maxBundleDiscount: 0.20,
     coordFee: 5115,
     coordThreshold: 3
   },
@@ -22,74 +33,87 @@ const SEGMENTS = {
     id: "grande",
     label: "Gran empresa",
     tag: "Corporativos y grupos con operación compleja",
+    basePrice: 50000,
+    marketingBasePrice: 50000,
+    maxBundleDiscount: 0.18,
     coordFee: 18370,
     coordThreshold: 3
   }
 };
+
+const ANNUAL_DISCOUNT = 0.05;
+const TOTAL_AREAS = 7;
 
 const AREAS = [
   {
     id: "contabilidad",
     label: "Contabilidad",
     icon: "ti-calculator",
-    description: "Pólizas, declaraciones, estados financieros y cumplimiento SAT.",
-    price: { pf: 1650, pyme: 9900, grande: 40590 }
+    description: "Pólizas, declaraciones, estados financieros y cumplimiento SAT."
   },
   {
-    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($8,488) para
-    // dejar margen real, no solo cubrir costo fijo.
     id: "administracion",
     label: "Administración",
     icon: "ti-clipboard-list",
-    description: "Tesorería, cuentas por pagar/cobrar, facturación y KPIs.",
-    price: { pf: 1000, pyme: 11000, grande: 28490 }
+    description: "Tesorería, cuentas por pagar/cobrar, facturación y KPIs."
   },
   {
-    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($8,488).
     id: "rrhh",
     label: "RRHH",
     icon: "ti-users",
-    description: "Nómina, altas/bajas IMSS, reclutamiento y liquidaciones.",
-    price: { pf: 1000, pyme: 11000, grande: 31570 }
+    description: "Nómina, altas/bajas IMSS, reclutamiento y liquidaciones."
   },
   {
     id: "sistemas",
     label: "Sistemas / IT",
     icon: "ti-device-desktop",
-    description: "Correo corporativo, soporte helpdesk, ERP y seguridad.",
-    price: { pf: 1000, pyme: 8635, grande: 36300 }
+    description: "Correo corporativo, soporte helpdesk, ERP y seguridad."
   },
   {
-    // Grande ajustado manualmente: el costeo daba $10,100, pero se decidió mantener el precio de negocio
-    // (criterio de mercado, no de costo/hora), + 10% general.
-    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($5,658).
     id: "compras",
     label: "Compras",
     icon: "ti-shopping-cart",
-    description: "Sourcing de proveedores, negociación y órdenes de compra.",
-    price: { pf: 1000, pyme: 11000, grande: 27500 }
+    description: "Sourcing de proveedores, negociación y órdenes de compra."
   },
   {
     // Incluye comisión variable sobre ventas generadas, además del fee fijo mensual.
-    // PyME subido a $11,000: por arriba del precio de equilibrio de equipo base ($7,544) y del
-    // sueldo bruto de un asesor comercial interno ($9,000-12,800).
     id: "ventas",
     label: "Ventas / Representaciones comerciales",
     icon: "ti-trending-up",
     description: "Representación comercial, canal y seguimiento a clientes.",
-    price: { pf: 1000, pyme: 11000, grande: 19800 },
     commission: 0.05
   },
   {
-    // Ajustado a tarifa de despacho/agencia independiente promedio de mercado
-    // (no al modelo de costeo interno), + 10% general.
     id: "marketing",
     label: "Marketing y Redes",
     icon: "ti-speakerphone",
-    description: "Redes sociales, contenido, publicidad digital y SEO.",
-    price: { pf: 3300, pyme: 22000, grande: 49500 }
+    description: "Redes sociales, contenido, publicidad digital y SEO."
   }
 ];
+
+function areaBasePrice(area, segmentId) {
+  const seg = SEGMENTS[segmentId];
+  return area.id === "marketing" ? seg.marketingBasePrice : seg.basePrice;
+}
+
+// Descuento por tamaño de paquete: 0% con 1 área, hasta maxBundleDiscount con las 7.
+function bundleDiscount(segmentId, count) {
+  if (count <= 1) return 0;
+  const seg = SEGMENTS[segmentId];
+  const n = Math.min(count, TOTAL_AREAS);
+  return seg.maxBundleDiscount * (n - 1) / (TOTAL_AREAS - 1);
+}
+
+function areaPrice(area, segmentId, count, annual) {
+  const base = areaBasePrice(area, segmentId);
+  const afterBundle = base * (1 - bundleDiscount(segmentId, count));
+  return annual ? afterBundle * (1 - ANNUAL_DISCOUNT) : afterBundle;
+}
+
+function coordFeeAmount(segmentId, annual) {
+  const seg = SEGMENTS[segmentId];
+  return annual ? seg.coordFee * (1 - ANNUAL_DISCOUNT) : seg.coordFee;
+}
 
 function tierFromCount(count) {
   if (count <= 0) return null;
