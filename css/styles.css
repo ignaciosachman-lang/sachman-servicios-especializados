@@ -654,3 +654,143 @@ form.contact-form input, form.contact-form select {
 }
 .cta-final h2 { font-size: 28px; margin: 0 0 12px; }
 .cta-final p { color: var(--text-muted); max-width: 520px; margin: 0 auto 24px; }
+
+/* ---------- Diagnóstico ---------- */
+
+.diag-progress-wrap { margin-bottom: 24px; }
+.diag-progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.diag-progress-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+.diag-progress-label { font-size: 12px; color: var(--text-muted); margin: 8px 0 0; }
+
+.diag-step-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.diag-question-title { margin: 0 0 20px; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+.diag-question-title i { color: var(--teal-dark); }
+
+.diag-question-block { margin-bottom: 26px; }
+.diag-question-block:last-child { margin-bottom: 0; }
+.diag-question-text { font-weight: 600; font-size: 14px; margin: 0 0 10px; }
+
+.diag-options { display: flex; flex-direction: column; gap: 8px; }
+
+.diag-option {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.diag-option:hover { border-color: var(--teal); }
+.diag-option.active {
+  border-color: var(--teal);
+  background: #e7f6f3;
+  color: var(--teal-dark);
+  font-weight: 600;
+}
+
+.diag-nav {
+  max-width: 720px;
+  margin: 20px auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.diag-results-header { text-align: center; margin-bottom: 28px; }
+.diag-results-header h2 { margin: 0 0 6px; }
+.diag-results-header p { color: var(--text-muted); margin: 0; }
+
+.diag-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.diag-result-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.diag-result-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.diag-result-top h4 { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.diag-result-top i { color: var(--teal-dark); }
+
+.diag-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.diag-badge-alto { background: #fbe2e2; color: #a32d2d; }
+.diag-badge-medio { background: #fdeee0; color: #8a4b12; }
+.diag-badge-bajo { background: #e2f4ec; color: #1c6b45; }
+
+.diag-findings { margin: 0 0 12px; padding-left: 18px; font-size: 13px; color: var(--text); }
+.diag-findings li { margin-bottom: 6px; }
+
+.diag-ok-note { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+.diag-cost-box {
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+.diag-cost-box p { margin: 0 0 4px; font-size: 13px; }
+.diag-cost-compare { color: var(--text-muted); font-size: 12px; }
+.diag-savings { color: var(--teal-dark); font-weight: 700; }
+
+.diag-summary-box {
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  max-width: 720px;
+  margin: 0 auto 32px;
+}
+.diag-summary-box h3 { margin: 0 0 10px; color: #fff; }
+.diag-summary-box p { color: #cdd8e3; font-size: 14px; }
+.diag-summary-box .summary-line { border-bottom: 1px solid rgba(255,255,255,0.15); color: #dbe4ec; }
+.diag-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.diag-summary-total .amount { font-size: 26px; font-weight: 700; color: #fff; }
+.diag-summary-box .savings-note { color: var(--teal); }
+
+.diag-lead-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.diag-lead-box h3 { margin: 0 0 4px; font-size: 17px; }
+.diag-lead-box p.sub { margin: 0 0 16px; font-size: 13px; color: var(--text-muted); }

@@ -13,7 +13,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const errorText = document.getElementById("form-error");
 
   let currentSegment = "pyme";
-  const selectedAreas = new Set(["contabilidad", "administracion"]);
+  let selectedAreas = new Set(["contabilidad", "administracion"]);
+
+  // Prefill desde el diagnóstico operativo (?segmento=pyme&areas=contabilidad,rrhh)
+  const params = new URLSearchParams(window.location.search);
+  const segParam = params.get("segmento");
+  const areasParam = params.get("areas");
+  if (segParam && SEGMENTS[segParam]) currentSegment = segParam;
+  if (areasParam) {
+    const validIds = areasParam.split(",").filter(function (id) {
+      return AREAS.some(function (a) { return a.id === id; });
+    });
+    if (validIds.length) selectedAreas = new Set(validIds);
+  }
 
   function isAnnual() {
     return !!(annualToggle && annualToggle.checked);

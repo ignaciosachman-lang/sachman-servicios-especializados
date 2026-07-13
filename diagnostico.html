@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico operativo gratuito · Grupo Sachman</title>
+<meta name="description" content="Responde 7 bloques de preguntas sobre tu operación y descubre dónde está el riesgo, cuánto te puede costar y cuánto ahorrarías con Grupo Sachman.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">GS</span>
+      Grupo Sachman
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="cotizador.html">Cotizador de referencia</a>
+    </nav>
+  </div>
+  <div class="container cotizador-page-header">
+    <h1>Diagnóstico operativo gratuito</h1>
+    <p>7 bloques de preguntas, una por cada área de tu operación. Al final te decimos qué te está doliendo, qué te puede costar seguir así, y cuánto pagarías (y ahorrarías) con Grupo Sachman.</p>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <div class="diag-progress-wrap">
+      <div class="diag-progress-bar"><div class="diag-progress-fill" id="progress-fill"></div></div>
+      <p class="diag-progress-label" id="progress-label">Paso 1 de 9</p>
+    </div>
+
+    <div id="diag-step" class="diag-step-card"></div>
+
+    <div class="diag-nav">
+      <button type="button" class="btn btn-dark-outline" id="btn-back">Atrás</button>
+      <button type="button" class="btn btn-primary" id="btn-next" disabled>Siguiente</button>
+    </div>
+
+    <div id="diag-results" class="hidden"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Grupo Sachman &middot; servicios especializados de personal con registro REPSE &middot; México / Estados Unidos</p>
+    <p>Diagnóstico orientativo, no vinculante. Un asesor valida contigo los resultados antes de cualquier propuesta.</p>
+  </div>
+</footer>
+
+<script src="js/pricing-data.js"></script>
+<script src="js/diagnostico-data.js"></script>
+<script src="js/diagnostico.js"></script>
+</body>
+</html>
