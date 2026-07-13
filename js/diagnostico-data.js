@@ -5,6 +5,63 @@
 // a un nivel y a una recomendación de contratar o no esa área.
 
 const EQUIPO_BASE_COST = 67900; // costo fijo mensual de armar tu propio equipo mínimo (1 Sr + 1 Jr) por área
+const DIRECTOR_HOURLY_RATE = 700; // MXN/hora — valor de referencia de la hora de quien dirige
+const INEFICIENCIA_RATE = 0.02; // % de la facturación mensual que se estima como fuga por decisiones/cobranza tardías
+const REPSE_RISK_TEXT = "Operar sin registro REPSE validado expone a multas de 2,000 a 50,000 UMA por subcontratación indebida (Art. 1004-C LFT) — un rango aproximado de $220,000 a $5,500,000 MXN según la gravedad. Cifra referencial; valida el valor UMA vigente.";
+
+const HIDDEN_COST_QUESTIONS = [
+  {
+    id: "horas",
+    text: "¿Cuántas horas a la semana pasas resolviendo problemas de administración, pagos o nóminas?",
+    options: [
+      { label: "2 a 5 horas", hours: 3.5 },
+      { label: "5 a 10 horas", hours: 7.5 },
+      { label: "Más de 10 horas", hours: 12 }
+    ]
+  },
+  {
+    id: "infodia",
+    text: "¿Tu información financiera está al día para tomar decisiones o se revisa hasta el cierre de mes?",
+    options: [
+      { label: "Al día, la reviso cuando la necesito", retraso: false },
+      { label: "Con retraso, se revisa hasta el cierre de mes", retraso: true }
+    ]
+  },
+  {
+    id: "facturacion",
+    text: "¿Cuál es tu facturación mensual aproximada?",
+    options: [
+      { label: "Menos de $100,000 MXN", monto: 75000 },
+      { label: "$100,000 a $500,000 MXN", monto: 300000 },
+      { label: "$500,000 a $2,000,000 MXN", monto: 1250000 },
+      { label: "Más de $2,000,000 MXN", monto: 2500000 }
+    ]
+  },
+  {
+    id: "repse",
+    text: "¿Tu estructura de personal administrativo cuenta con registro REPSE validado y contratos alineados a la ley actual?",
+    options: [
+      { label: "Sí, validado", riesgo: false },
+      { label: "No", riesgo: true },
+      { label: "No estoy seguro/a", riesgo: true }
+    ]
+  }
+];
+
+// hiddenAnswers: { horas: idx, infodia: idx, facturacion: idx, repse: idx }
+function computeHiddenCost(hiddenAnswers) {
+  const qHoras = HIDDEN_COST_QUESTIONS[0].options[hiddenAnswers.horas];
+  const qInfo = HIDDEN_COST_QUESTIONS[1].options[hiddenAnswers.infodia];
+  const qFact = HIDDEN_COST_QUESTIONS[2].options[hiddenAnswers.facturacion];
+  const qRepse = HIDDEN_COST_QUESTIONS[3].options[hiddenAnswers.repse];
+
+  const costoTiempo = qHoras ? qHoras.hours * 4 * DIRECTOR_HOURLY_RATE : 0;
+  const costoIneficiencia = (qInfo && qInfo.retraso && qFact) ? qFact.monto * INEFICIENCIA_RATE : 0;
+  const costoOcultoMensual = costoTiempo + costoIneficiencia;
+  const riesgoRepse = !!(qRepse && qRepse.riesgo);
+
+  return { costoTiempo: costoTiempo, costoIneficiencia: costoIneficiencia, costoOcultoMensual: costoOcultoMensual, riesgoRepse: riesgoRepse };
+}
 
 const SEGMENT_QUESTION = {
   id: "segmento",

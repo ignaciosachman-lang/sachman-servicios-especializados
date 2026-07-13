@@ -8,17 +8,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const progressWrap = document.querySelector(".diag-progress-wrap");
   const resultsEl = document.getElementById("diag-results");
 
-  const TOTAL_STEPS = 1 + DIAGNOSTIC_AREAS.length; // segmento + 7 áreas
-  let currentStep = 0; // 0 = segmento, 1..7 = áreas
+  const TOTAL_STEPS = 1 + DIAGNOSTIC_AREAS.length + 1; // segmento + 7 áreas + costo oculto
+  const HIDDEN_COST_STEP = 1 + DIAGNOSTIC_AREAS.length; // último paso
+  let currentStep = 0; // 0 = segmento, 1..7 = áreas, 8 = costo oculto
   let segmentId = null;
-  const answers = {}; // questionId -> optionIndex
+  const answers = {}; // questionId -> optionIndex (preguntas de área)
+  const hiddenAnswers = {}; // horas/infodia/facturacion/repse -> optionIndex
 
   function currentArea() {
-    return currentStep === 0 ? null : DIAGNOSTIC_AREAS[currentStep - 1];
+    return (currentStep === 0 || currentStep === HIDDEN_COST_STEP) ? null : DIAGNOSTIC_AREAS[currentStep - 1];
   }
 
   function isStepComplete() {
     if (currentStep === 0) return !!segmentId;
+    if (currentStep === HIDDEN_COST_STEP) {
+      return HIDDEN_COST_QUESTIONS.every(function (q) { return typeof hiddenAnswers[q.id] === "number"; });
+    }
     const area = currentArea();
     return area.questions.every(function (q) { return typeof answers[q.id] === "number"; });
   }
@@ -68,8 +73,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function renderHiddenCostStep() {
+    let html = '<p class="step-label">Antes de tu diagnóstico</p><h3 class="diag-question-title">El costo de seguir operando así</h3>';
+    html += '<p class="diag-question-intro">Estas 4 preguntas no califican riesgo por área — calculan cuánto te está costando en dinero real seguir sin un sistema operativo.</p>';
+    HIDDEN_COST_QUESTIONS.forEach(function (q) {
+      html += '<div class="diag-question-block">';
+      html += '<p class="diag-question-text">' + q.text + "</p>";
+      html += '<div class="diag-options">';
+      q.options.forEach(function (opt, i) {
+        const active = hiddenAnswers[q.id] === i;
+        html += '<div class="diag-option' + (active ? " active" : "") + '" data-hqid="' + q.id + '" data-idx="' + i + '">' + opt.label + "</div>";
+      });
+      html += "</div></div>";
+    });
+    stepEl.innerHTML = html;
+
+    stepEl.querySelectorAll(".diag-option").forEach(function (el) {
+      el.addEventListener("click", function () {
+        const qid = el.getAttribute("data-hqid");
+        hiddenAnswers[qid] = parseInt(el.getAttribute("data-idx"), 10);
+        renderHiddenCostStep();
+        updateNav();
+      });
+    });
+  }
+
   function renderStep() {
     if (currentStep === 0) renderSegmentStep();
+    else if (currentStep === HIDDEN_COST_STEP) renderHiddenCostStep();
     else renderAreaStep();
     progressFill.style.width = Math.round(((currentStep + 1) / (TOTAL_STEPS + 1)) * 100) + "%";
     progressLabel.textContent = "Paso " + (currentStep + 1) + " de " + (TOTAL_STEPS + 1);
@@ -129,8 +160,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     const totalAhorro = totalEquipoPropio - totalConGS;
 
-    let html = '<div class="diag-results-header">';
-    html += "<h2>Tu diagnóstico operativo</h2>";
+    // Si ninguna área calificó riesgo medio/alto, usamos Administración como punto de partida
+    // (las preguntas de costo oculto son justo sobre administración, pagos y nómina).
+    let inversionMensual = totalConGS;
+    let inversionEsFallback = false;
+    if (recommendedCount === 0) {
+      const fallbackArea = AREAS.find(function (a) { return a.id === "administracion"; });
+      inversionMensual = areaPrice(fallbackArea, segmentId, 1, false);
+      inversionEsFallback = true;
+    }
+
+    const hidden = computeHiddenCost(hiddenAnswers);
+    const netoPositivo = hidden.costoOcultoMensual >= inversionMensual;
+    const delta = netoPositivo ? (hidden.costoOcultoMensual - inversionMensual) : (inversionMensual - hidden.costoOcultoMensual);
+
+    let html = '<div class="compare-hero">';
+    html += '<p class="step-label" style="margin-bottom:6px;">Antes de tu diagnóstico por área</p>';
+    html += '<h2 style="margin:0 0 18px;">Lo que te cuesta seguir así, contra lo que cuesta resolverlo</h2>';
+    html += '<div class="compare-grid">';
+    html += '<div class="compare-card chaos">';
+    html += '<p class="compare-label">Tu caos actual</p>';
+    html += '<p class="compare-amount">' + formatMXN(hidden.costoOcultoMensual) + '<span>/mes</span></p>';
+    html += '<p class="compare-sub">Calculado con tus horas resolviendo bomberazos' + (hidden.costoIneficiencia > 0 ? ' y la fuga estimada por decisiones e información con retraso' : '') + '.</p>';
+    html += '<div class="chaos-visual" aria-hidden="true"><span class="chaos-note n1">Pagos atrasados</span><span class="chaos-note n2">Info sin actualizar</span><span class="chaos-note n3">Horas apagando fuegos</span></div>';
+    html += '</div>';
+    html += '<div class="compare-card order">';
+    html += '<p class="compare-label">Tu inversión con Sachman</p>';
+    html += '<p class="compare-amount">' + formatMXN(inversionMensual) + '<span>/mes</span></p>';
+    html += '<p class="compare-sub">' + (inversionEsFallback ? 'Punto de partida sugerido (Administración) — tus 7 áreas salieron en riesgo bajo.' : 'Equipo especializado, procesos probados, tecnología y cumplimiento REPSE incluido.') + '</p>';
+    html += '<div class="mini-dashboard" aria-hidden="true">';
+    html += '<div class="mini-kpi"><span class="mk-label">Declaraciones a tiempo</span><span class="mk-value">100%</span></div>';
+    html += '<div class="mini-kpi"><span class="mk-label">Nómina sin errores</span><span class="mk-value">99%</span></div>';
+    html += '<svg class="mini-spark" viewBox="0 0 120 34" preserveAspectRatio="none"><polyline points="0,28 20,24 40,26 60,16 80,18 100,8 120,4" fill="none" stroke-width="2"/><circle cx="120" cy="4" r="3"></circle></svg>';
+    html += '</div></div>';
+    html += '</div>';
+    html += '<p class="compare-delta">' + (netoPositivo
+      ? 'Tu operación actual ya te cuesta <strong>' + formatMXN(delta) + '/mes más</strong> que resolverlo con nosotros.'
+      : 'La diferencia (' + formatMXN(delta) + '/mes) es la inversión en dejar de operar a ciegas: recuperas tu tiempo, tienes cumplimiento REPSE y visibilidad real.') + '</p>';
+    if (hidden.riesgoRepse) {
+      html += '<div class="risk-alert"><i class="ti ti-alert-triangle" aria-hidden="true"></i><p>' + REPSE_RISK_TEXT + '</p></div>';
+    }
+    html += '</div>';
+
+    html += '<div class="diag-results-header">';
+    html += "<h2>Detalle por área</h2>";
     html += "<p>Segmento detectado: <strong>" + seg.label + "</strong></p>";
     html += "</div>";
 
@@ -171,6 +244,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const areaIds = recommended.map(function (r) { return r.area.id; }).join(",");
       html += '<a class="btn btn-primary" style="margin-top:14px;" href="cotizador.html?segmento=' + segmentId + "&areas=" + areaIds + '">Ajustar y ver cotización completa</a>';
       html += "</div>";
+    } else {
+      html += '<div class="diag-summary-box">';
+      html += "<h3>Tus 7 áreas salieron en riesgo bajo</h3>";
+      html += "<p>No es urgente contratar todavía, pero el costo oculto de arriba no depende del riesgo por área — es tiempo y fricción real. Explora el cotizador cuando quieras ajustar un paquete a la medida.</p>";
+      html += '<a class="btn btn-primary" style="margin-top:14px;" href="cotizador.html?segmento=' + segmentId + '">Ver el cotizador de referencia</a>';
+      html += "</div>";
     }
 
     html += '<div class="diag-lead-box">';
@@ -210,6 +289,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       const bodyLines = [
         "Segmento: " + seg.label,
+        "",
+        "Tu caos actual: " + formatMXN(hidden.costoOcultoMensual) + "/mes",
+        "Tu inversión con Sachman: " + formatMXN(inversionMensual) + "/mes" + (inversionEsFallback ? " (punto de partida sugerido)" : ""),
+        hidden.riesgoRepse ? "Alerta REPSE: " + REPSE_RISK_TEXT : "",
+        "",
         "Áreas con riesgo medio/alto: " + (recommendedCount > 0 ? recommended.map(function (r) { return r.area.label; }).join(", ") : "ninguna"),
         "",
         "Detalle por área:",
