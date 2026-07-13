@@ -451,14 +451,14 @@ footer.site-footer a { color: #cdd8e3; text-decoration: none; }
   margin-bottom: 14px;
 }
 
-form.contact-form {
+form.contact-form, .contact-form {
   margin-top: 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-form.contact-form input, form.contact-form select {
+form.contact-form input, form.contact-form select, .contact-form input, .contact-form select {
   padding: 10px 12px;
   border-radius: var(--radius);
   border: 1px solid var(--border);

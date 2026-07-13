@@ -7,7 +7,21 @@
 const EQUIPO_BASE_COST = 67900; // costo fijo mensual de armar tu propio equipo mínimo (1 Sr + 1 Jr) por área
 const DIRECTOR_HOURLY_RATE = 700; // MXN/hora — valor de referencia de la hora de quien dirige
 const INEFICIENCIA_RATE = 0.02; // % de la facturación mensual que se estima como fuga por decisiones/cobranza tardías
-const REPSE_RISK_TEXT = "Operar sin registro REPSE validado expone a multas de 2,000 a 50,000 UMA por subcontratación indebida (Art. 1004-C LFT) — un rango aproximado de $220,000 a $5,500,000 MXN según la gravedad. Cifra referencial; valida el valor UMA vigente.";
+// TODO: pega aquí tu endpoint de Formspree (https://formspree.io/f/xxxxxxxx) para que el
+// lead se capture aunque la persona abandone el diagnóstico a la mitad. Mientras esté vacío,
+// no se envía nada (no rompe nada, solo no captura en tiempo real).
+const FORMSPREE_ENDPOINT = "";
+
+function submitLeadToFormspree(payload) {
+  if (!FORMSPREE_ENDPOINT) return;
+  fetch(FORMSPREE_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(function () {});
+}
+
+const REPSE_RISK_TEXT = "Para modalidad in-house, la ley exige que el proveedor de personal especializado esté registrado ante REPSE (STPS) — trabajar con un proveedor sin registro expone a la no deducibilidad de esos pagos y a responsabilidad solidaria en IMSS/INFONAVIT (Art. 15-A a 15-D LFT, multas de 2,000 a 50,000 UMA por subcontratación indebida). Grupo Sachman opera con REPSE vigente, así que ese riesgo queda cubierto si trabajas con nosotros en esa modalidad.";
 
 const HIDDEN_COST_QUESTIONS = [
   {
@@ -38,22 +52,22 @@ const HIDDEN_COST_QUESTIONS = [
     ]
   },
   {
-    id: "repse",
-    text: "¿Tu estructura de personal administrativo cuenta con registro REPSE validado y contratos alineados a la ley actual?",
+    id: "modalidad",
+    text: "¿El servicio lo necesitas remoto o requieres personal trabajando dentro de tus instalaciones (in-house)?",
     options: [
-      { label: "Sí, validado", riesgo: false },
-      { label: "No", riesgo: true },
-      { label: "No estoy seguro/a", riesgo: true }
+      { label: "Remoto — no necesito personal en sitio", riesgo: false },
+      { label: "In-house, y no estoy seguro/a si mi proveedor actual tiene REPSE vigente", riesgo: true },
+      { label: "In-house, y ya verifiqué que sí cuenta con REPSE", riesgo: false }
     ]
   }
 ];
 
-// hiddenAnswers: { horas: idx, infodia: idx, facturacion: idx, repse: idx }
+// hiddenAnswers: { horas: idx, infodia: idx, facturacion: idx, modalidad: idx }
 function computeHiddenCost(hiddenAnswers) {
   const qHoras = HIDDEN_COST_QUESTIONS[0].options[hiddenAnswers.horas];
   const qInfo = HIDDEN_COST_QUESTIONS[1].options[hiddenAnswers.infodia];
   const qFact = HIDDEN_COST_QUESTIONS[2].options[hiddenAnswers.facturacion];
-  const qRepse = HIDDEN_COST_QUESTIONS[3].options[hiddenAnswers.repse];
+  const qRepse = HIDDEN_COST_QUESTIONS[3].options[hiddenAnswers.modalidad];
 
   const costoTiempo = qHoras ? qHoras.hours * 4 * DIRECTOR_HOURLY_RATE : 0;
   const costoIneficiencia = (qInfo && qInfo.retraso && qFact) ? qFact.monto * INEFICIENCIA_RATE : 0;

@@ -8,24 +8,57 @@ document.addEventListener("DOMContentLoaded", function () {
   const progressWrap = document.querySelector(".diag-progress-wrap");
   const resultsEl = document.getElementById("diag-results");
 
-  const TOTAL_STEPS = 1 + DIAGNOSTIC_AREAS.length + 1; // segmento + 7 áreas + costo oculto
-  const HIDDEN_COST_STEP = 1 + DIAGNOSTIC_AREAS.length; // último paso
-  let currentStep = 0; // 0 = segmento, 1..7 = áreas, 8 = costo oculto
+  const AREA_OFFSET = 2; // pasos 0=contacto, 1=segmento, así que el área empieza en el paso 2
+  const TOTAL_STEPS = AREA_OFFSET + DIAGNOSTIC_AREAS.length + 1; // contacto + segmento + 7 áreas + costo oculto
+  const SEGMENT_STEP = 1;
+  const HIDDEN_COST_STEP = AREA_OFFSET + DIAGNOSTIC_AREAS.length; // último paso
+  let currentStep = 0; // 0 = contacto, 1 = segmento, 2..8 = áreas, 9 = costo oculto
   let segmentId = null;
+  let leadName = "";
+  let leadEmail = "";
+  let leadPhone = "";
   const answers = {}; // questionId -> optionIndex (preguntas de área)
-  const hiddenAnswers = {}; // horas/infodia/facturacion/repse -> optionIndex
+  const hiddenAnswers = {}; // horas/infodia/facturacion/modalidad -> optionIndex
 
   function currentArea() {
-    return (currentStep === 0 || currentStep === HIDDEN_COST_STEP) ? null : DIAGNOSTIC_AREAS[currentStep - 1];
+    return (currentStep < AREA_OFFSET || currentStep === HIDDEN_COST_STEP) ? null : DIAGNOSTIC_AREAS[currentStep - AREA_OFFSET];
   }
 
   function isStepComplete() {
-    if (currentStep === 0) return !!segmentId;
+    if (currentStep === 0) {
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail.trim());
+      const phoneDigits = leadPhone.replace(/\D/g, "");
+      return leadName.trim().length > 1 && emailOk && phoneDigits.length >= 10;
+    }
+    if (currentStep === SEGMENT_STEP) return !!segmentId;
     if (currentStep === HIDDEN_COST_STEP) {
       return HIDDEN_COST_QUESTIONS.every(function (q) { return typeof hiddenAnswers[q.id] === "number"; });
     }
     const area = currentArea();
     return area.questions.every(function (q) { return typeof answers[q.id] === "number"; });
+  }
+
+  function renderGateStep() {
+    let html = '<p class="step-label">Antes de empezar</p><h3 class="diag-question-title">¿A dónde te enviamos tu diagnóstico?</h3>';
+    html += '<p class="diag-question-intro">Lo necesitamos para enviarte tu resultado personalizado y que un asesor te contacte en menos de 24 horas hábiles.</p>';
+    html += '<div class="contact-form">';
+    html += '<input type="text" id="g-name" placeholder="Nombre completo" value="' + leadName.replace(/"/g, "&quot;") + '">';
+    html += '<input type="email" id="g-email" placeholder="Correo electrónico" value="' + leadEmail.replace(/"/g, "&quot;") + '">';
+    html += '<input type="tel" id="g-phone" placeholder="Celular / WhatsApp (10 dígitos)" value="' + leadPhone.replace(/"/g, "&quot;") + '">';
+    html += "</div>";
+    stepEl.innerHTML = html;
+
+    const nameEl = document.getElementById("g-name");
+    const emailEl = document.getElementById("g-email");
+    const phoneEl = document.getElementById("g-phone");
+    [nameEl, emailEl, phoneEl].forEach(function (el) {
+      el.addEventListener("input", function () {
+        leadName = nameEl.value;
+        leadEmail = emailEl.value;
+        leadPhone = phoneEl.value;
+        updateNav();
+      });
+    });
   }
 
   function renderSegmentStep() {
@@ -49,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function renderAreaStep() {
     const area = currentArea();
-    let html = '<p class="step-label">Área ' + currentStep + " de " + DIAGNOSTIC_AREAS.length + "</p>";
+    let html = '<p class="step-label">Área ' + (currentStep - AREA_OFFSET + 1) + " de " + DIAGNOSTIC_AREAS.length + "</p>";
     html += '<h3 class="diag-question-title"><i class="ti ' + area.icon + '" aria-hidden="true"></i> ' + area.label + "</h3>";
     area.questions.forEach(function (q) {
       html += '<div class="diag-question-block">';
@@ -99,7 +132,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderStep() {
-    if (currentStep === 0) renderSegmentStep();
+    if (currentStep === 0) renderGateStep();
+    else if (currentStep === SEGMENT_STEP) renderSegmentStep();
     else if (currentStep === HIDDEN_COST_STEP) renderHiddenCostStep();
     else renderAreaStep();
     progressFill.style.width = Math.round(((currentStep + 1) / (TOTAL_STEPS + 1)) * 100) + "%";
@@ -122,6 +156,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   nextBtn.addEventListener("click", function () {
     if (!isStepComplete()) return;
+    if (currentStep === 0) {
+      submitLeadToFormspree({
+        nombre: leadName.trim(),
+        correo: leadEmail.trim(),
+        celular: leadPhone.trim(),
+        etapa: "Inicio de diagnóstico",
+        origen: "diagnostico.html"
+      });
+    }
     if (currentStep < TOTAL_STEPS - 1) {
       currentStep += 1;
       renderStep();
@@ -253,15 +296,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     html += '<div class="diag-lead-box">';
-    html += "<h3>Recibe este diagnóstico por correo</h3>";
-    html += "<p class=\"sub\">Un asesor lo revisa contigo en menos de 24 horas hábiles.</p>";
-    html += '<form class="contact-form" id="diag-lead-form">';
-    html += '<input type="text" id="d-name" placeholder="Nombre completo" required>';
+    html += "<h3>Recibe este diagnóstico completo por correo</h3>";
+    html += "<p class=\"sub\">Ya tenemos tu contacto (" + leadEmail + ") — confirma tu empresa y te lo enviamos. Un asesor lo revisa contigo en menos de 24 horas hábiles.</p>";
+    html += '<div class="contact-form">';
     html += '<input type="text" id="d-company" placeholder="Empresa (opcional)">';
-    html += '<input type="email" id="d-email" placeholder="Correo electrónico" required>';
-    html += '<span class="error-text" id="diag-lead-error">Revisa tu nombre y correo electrónico.</span>';
-    html += '<button type="submit" class="btn btn-primary">Enviar mi diagnóstico</button>';
-    html += "</form>";
+    html += '<button type="button" class="btn btn-primary" id="diag-send-btn">Enviar mi diagnóstico</button>';
+    html += "</div>";
     html += '<div id="diag-lead-result" class="hidden" style="margin-top:14px; font-size:13px; color:var(--text-muted);"></div>';
     html += "</div>";
 
@@ -271,18 +311,11 @@ document.addEventListener("DOMContentLoaded", function () {
     navEl.classList.add("hidden");
     progressWrap.classList.add("hidden");
 
-    document.getElementById("diag-lead-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const name = document.getElementById("d-name").value.trim();
-      const email = document.getElementById("d-email").value.trim();
+    document.getElementById("diag-send-btn").addEventListener("click", function () {
+      const name = leadName.trim();
+      const email = leadEmail.trim();
+      const phone = leadPhone.trim();
       const company = document.getElementById("d-company").value.trim();
-      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      const errorText = document.getElementById("diag-lead-error");
-      if (!name || !emailOk) {
-        errorText.style.display = "block";
-        return;
-      }
-      errorText.style.display = "none";
 
       const lines = results.map(function (r) {
         return "- " + r.area.label + ": riesgo " + r.result.level + (r.result.recommend ? " — " + formatMXN(r.priceMonthly) + "/mes (ahorras " + formatMXN(EQUIPO_BASE_COST - r.priceMonthly) + "/mes vs. equipo propio)" : " — sin urgencia");
@@ -304,9 +337,22 @@ document.addEventListener("DOMContentLoaded", function () {
         "",
         "Nombre: " + name,
         "Empresa: " + (company || "N/A"),
-        "Correo: " + email
+        "Correo: " + email,
+        "Celular: " + phone
       ].filter(function (l) { return l !== ""; });
       const body = bodyLines.join("\n");
+
+      submitLeadToFormspree({
+        nombre: name,
+        correo: email,
+        celular: phone,
+        empresa: company || "N/A",
+        etapa: "Diagnóstico completo",
+        segmento: seg.label,
+        tu_caos_actual: formatMXN(hidden.costoOcultoMensual) + "/mes",
+        tu_inversion: formatMXN(inversionMensual) + "/mes",
+        resumen: body
+      });
 
       const resultBox = document.getElementById("diag-lead-result");
       resultBox.classList.remove("hidden");
