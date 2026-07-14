@@ -899,3 +899,23 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 }
 .risk-alert i { color: #fdc98a; font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 .risk-alert p { margin: 0; font-size: 12.5px; color: #fde4c4; line-height: 1.55; }
+
+.light-hero { max-width: 620px; text-align: left; }
+.light-pain {
+  font-size: 15px; color: #fff; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+}
+.light-pain i { color: var(--teal); font-size: 18px; }
+.light-pain strong { color: var(--teal); }
+.light-cost { font-size: 15px; color: #cdd8e3; line-height: 1.6; margin: 0; }
+.light-cost strong { color: #fff; }
+
+.plantilla-panel {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 20px 22px; max-width: 780px; margin: 0 auto 32px;
+}
+.plantilla-panel h3 { margin: 0 0 10px; font-size: 15px; }
+.plantilla-panel p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--text); }
+.plantilla-panel p.plantilla-growth-note {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  color: var(--text-muted); font-size: 13px;
+}

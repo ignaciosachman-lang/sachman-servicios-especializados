@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const progressWrap = document.querySelector(".diag-progress-wrap");
   const resultsEl = document.getElementById("diag-results");
 
+  const LIGHT_TOTAL = 3; // dolor, horas, crecimiento
+  let phase = "light"; // "light" (sin gate) -> "full" (con gate, el flujo completo)
+  let lightStep = 0;
+  const lightAnswers = {}; // painArea: areaId|"ninguna", horas: idx, crecimiento: idx
+
   const AREA_OFFSET = 2; // pasos 0=contacto, 1=segmento, así que el área empieza en el paso 2
   const TOTAL_STEPS = AREA_OFFSET + DIAGNOSTIC_AREAS.length + 1; // contacto + segmento + 7 áreas + costo oculto
   const SEGMENT_STEP = 1;
@@ -18,7 +23,62 @@ document.addEventListener("DOMContentLoaded", function () {
   let leadEmail = "";
   let leadPhone = "";
   const answers = {}; // questionId -> optionIndex (preguntas de área)
-  const hiddenAnswers = {}; // horas/infodia/facturacion/modalidad -> optionIndex
+  const hiddenAnswers = {}; // infodia/facturacion/plantilla/modalidad -> optionIndex
+
+  function isLightStepComplete() {
+    if (lightStep === 0) return typeof lightAnswers.painArea !== "undefined";
+    if (lightStep === 1) return typeof lightAnswers.horas === "number";
+    if (lightStep === 2) return typeof lightAnswers.crecimiento === "number";
+    return false;
+  }
+
+  function renderLightStep() {
+    let html = "";
+    if (lightStep === 0) {
+      html += '<p class="step-label">Identifiquemos el dolor primero</p><h3 class="diag-question-title">¿Cuál de estas áreas te quita más el sueño hoy?</h3>';
+      html += '<div class="diag-options">';
+      DIAGNOSTIC_AREAS.forEach(function (area) {
+        const active = lightAnswers.painArea === area.id;
+        html += '<div class="diag-option' + (active ? " active" : "") + '" data-pain="' + area.id + '"><i class="ti ' + area.icon + '" aria-hidden="true" style="margin-right:8px;"></i>' + area.label + "</div>";
+      });
+      const activeNone = lightAnswers.painArea === "ninguna";
+      html += '<div class="diag-option' + (activeNone ? " active" : "") + '" data-pain="ninguna">No sé, todo se siente desordenado</div>';
+      html += "</div>";
+    } else if (lightStep === 1) {
+      html += '<p class="step-label">Paso 2 de 3</p><h3 class="diag-question-title">' + LIGHT_HOURS_QUESTION.text + "</h3>";
+      html += '<div class="diag-options">';
+      LIGHT_HOURS_QUESTION.options.forEach(function (opt, i) {
+        const active = lightAnswers.horas === i;
+        html += '<div class="diag-option' + (active ? " active" : "") + '" data-light="horas" data-idx="' + i + '">' + opt.label + "</div>";
+      });
+      html += "</div>";
+    } else if (lightStep === 2) {
+      html += '<p class="step-label">Paso 3 de 3</p><h3 class="diag-question-title">' + LIGHT_GROWTH_QUESTION.text + "</h3>";
+      html += '<div class="diag-options">';
+      LIGHT_GROWTH_QUESTION.options.forEach(function (opt, i) {
+        const active = lightAnswers.crecimiento === i;
+        html += '<div class="diag-option' + (active ? " active" : "") + '" data-light="crecimiento" data-idx="' + i + '">' + opt.label + "</div>";
+      });
+      html += "</div>";
+    }
+    stepEl.innerHTML = html;
+
+    stepEl.querySelectorAll(".diag-option[data-pain]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        lightAnswers.painArea = el.getAttribute("data-pain");
+        renderLightStep();
+        updateNav();
+      });
+    });
+    stepEl.querySelectorAll(".diag-option[data-light]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        const key = el.getAttribute("data-light");
+        lightAnswers[key] = parseInt(el.getAttribute("data-idx"), 10);
+        renderLightStep();
+        updateNav();
+      });
+    });
+  }
 
   function currentArea() {
     return (currentStep < AREA_OFFSET || currentStep === HIDDEN_COST_STEP) ? null : DIAGNOSTIC_AREAS[currentStep - AREA_OFFSET];
@@ -132,6 +192,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderStep() {
+    if (phase === "light") {
+      renderLightStep();
+      progressFill.style.width = Math.round(((lightStep + 1) / LIGHT_TOTAL) * 100) + "%";
+      progressLabel.textContent = "Paso " + (lightStep + 1) + " de " + LIGHT_TOTAL;
+      backBtn.disabled = lightStep === 0;
+      updateNav();
+      return;
+    }
     if (currentStep === 0) renderGateStep();
     else if (currentStep === SEGMENT_STEP) renderSegmentStep();
     else if (currentStep === HIDDEN_COST_STEP) renderHiddenCostStep();
@@ -143,11 +211,23 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateNav() {
+    if (phase === "light") {
+      nextBtn.disabled = !isLightStepComplete();
+      nextBtn.textContent = lightStep === LIGHT_TOTAL - 1 ? "Ver diagnóstico ligero" : "Siguiente";
+      return;
+    }
     nextBtn.disabled = !isStepComplete();
     nextBtn.textContent = currentStep === TOTAL_STEPS - 1 ? "Ver mi diagnóstico" : "Siguiente";
   }
 
   backBtn.addEventListener("click", function () {
+    if (phase === "light") {
+      if (lightStep > 0) {
+        lightStep -= 1;
+        renderStep();
+      }
+      return;
+    }
     if (currentStep > 0) {
       currentStep -= 1;
       renderStep();
@@ -155,6 +235,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   nextBtn.addEventListener("click", function () {
+    if (phase === "light") {
+      if (!isLightStepComplete()) return;
+      if (lightStep < LIGHT_TOTAL - 1) {
+        lightStep += 1;
+        renderStep();
+      } else {
+        showLightResults();
+      }
+      return;
+    }
     if (!isStepComplete()) return;
     if (currentStep === 0) {
       submitLeadToFormspree({
@@ -177,6 +267,46 @@ document.addEventListener("DOMContentLoaded", function () {
     if (level === "Alto") return "diag-badge-alto";
     if (level === "Medio") return "diag-badge-medio";
     return "diag-badge-bajo";
+  }
+
+  function showLightResults() {
+    const painArea = (lightAnswers.painArea && lightAnswers.painArea !== "ninguna")
+      ? DIAGNOSTIC_AREAS.find(function (a) { return a.id === lightAnswers.painArea; })
+      : null;
+    const horasOpt = LIGHT_HOURS_QUESTION.options[lightAnswers.horas];
+    const costoTiempo = horasOpt.hours * 4 * DIRECTOR_HOURLY_RATE;
+    const creceOpt = LIGHT_GROWTH_QUESTION.options[lightAnswers.crecimiento];
+
+    let html = '<div class="compare-hero light-hero">';
+    html += '<p class="step-label" style="margin-bottom:6px; color:#cdd8e3;">Diagnóstico ligero</p>';
+    html += '<h2 style="margin:0 0 16px;">Esto detectamos con 3 preguntas</h2>';
+    if (painArea) {
+      html += '<p class="light-pain"><i class="ti ' + painArea.icon + '" aria-hidden="true"></i> Tu prioridad hoy: <strong>' + painArea.label + '</strong></p>';
+    }
+    html += '<p class="light-cost">Solo en tiempo resolviendo problemas en vez de dirigir, tu operación pierde aprox. <strong>' + formatMXN(costoTiempo) + '/mes</strong>.</p>';
+    if (creceOpt.crece) {
+      html += '<div class="risk-alert"><i class="ti ti-trending-up" aria-hidden="true"></i><p>' + GROWTH_WARNING_TEXT + '</p></div>';
+    }
+    html += '<a class="btn btn-primary" id="btn-full-diagnostic" style="margin-top:20px;">Ver mi diagnóstico completo (5 min) →</a>';
+    html += "</div>";
+
+    resultsEl.innerHTML = html;
+    resultsEl.classList.remove("hidden");
+    stepEl.classList.add("hidden");
+    navEl.classList.add("hidden");
+    progressWrap.classList.add("hidden");
+
+    document.getElementById("btn-full-diagnostic").addEventListener("click", function () {
+      phase = "full";
+      currentStep = 0;
+      resultsEl.classList.add("hidden");
+      resultsEl.innerHTML = "";
+      stepEl.classList.remove("hidden");
+      navEl.classList.remove("hidden");
+      progressWrap.classList.remove("hidden");
+      renderStep();
+      window.scrollTo(0, 0);
+    });
   }
 
   function showResults() {
@@ -213,7 +343,8 @@ document.addEventListener("DOMContentLoaded", function () {
       inversionEsFallback = true;
     }
 
-    const hidden = computeHiddenCost(hiddenAnswers);
+    const horasSemana = LIGHT_HOURS_QUESTION.options[lightAnswers.horas].hours;
+    const hidden = computeHiddenCost(hiddenAnswers, horasSemana);
     const netoPositivo = hidden.costoOcultoMensual >= inversionMensual;
     const delta = netoPositivo ? (hidden.costoOcultoMensual - inversionMensual) : (inversionMensual - hidden.costoOcultoMensual);
 
@@ -244,6 +375,17 @@ document.addEventListener("DOMContentLoaded", function () {
       html += '<div class="risk-alert"><i class="ti ti-alert-triangle" aria-hidden="true"></i><p>' + REPSE_RISK_TEXT + '</p></div>';
     }
     html += '</div>';
+
+    if (hidden.personasPlantilla > 0) {
+      const creceOpt = LIGHT_GROWTH_QUESTION.options[lightAnswers.crecimiento];
+      html += '<div class="plantilla-panel">';
+      html += '<h3>Tu plantilla administrativa actual</h3>';
+      html += '<p>Con ' + (hidden.personasPlantilla % 1 === 0 ? hidden.personasPlantilla : '~' + hidden.personasPlantilla) + ' personas dedicadas a esto, tu costo fijo de nómina + carga social es de aprox. <strong>' + formatMXN(hidden.costoPlantilla) + '/mes</strong> — antes de contar vacaciones, IMSS o rotación.</p>';
+      if (creceOpt && creceOpt.crece) {
+        html += '<p class="plantilla-growth-note">' + GROWTH_WARNING_TEXT + '</p>';
+      }
+      html += '</div>';
+    }
 
     html += '<div class="diag-results-header">';
     html += "<h2>Detalle por área</h2>";

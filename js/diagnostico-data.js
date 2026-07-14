@@ -7,6 +7,30 @@
 const EQUIPO_BASE_COST = 67900; // costo fijo mensual de armar tu propio equipo mínimo (1 Sr + 1 Jr) por área
 const DIRECTOR_HOURLY_RATE = 700; // MXN/hora — valor de referencia de la hora de quien dirige
 const INEFICIENCIA_RATE = 0.02; // % de la facturación mensual que se estima como fuga por decisiones/cobranza tardías
+const ADMIN_STAFF_COST_PER_PERSON = 19500; // MXN/mes cargado (sueldo + carga social) por persona administrativa — mismo supuesto "Auxiliar" de los manuales de área
+const GROWTH_WARNING_TEXT = "Cuando creces, la tentación es contratar más gente — cada persona nueva agrega cargas fijas de nómina (IMSS, INFONAVIT, aguinaldo, prima vacacional) sin importar si el crecimiento es temporal. Con un servicio como el nuestro, la capacidad escala contigo sin ese compromiso fijo.";
+
+// ---- Etapa 1: diagnóstico ligero (sin gate, 3 preguntas) ----
+
+const LIGHT_HOURS_QUESTION = {
+  id: "horas",
+  text: "¿Cuántas horas a la semana pasas resolviendo problemas de administración, pagos o nóminas?",
+  options: [
+    { label: "2 a 5 horas", hours: 3.5 },
+    { label: "5 a 10 horas", hours: 7.5 },
+    { label: "Más de 10 horas", hours: 12 }
+  ]
+};
+
+const LIGHT_GROWTH_QUESTION = {
+  id: "crecimiento",
+  text: "¿Planeas crecer en ventas u operación en los próximos 12 meses?",
+  options: [
+    { label: "Sí, ya lo tengo en el radar", crece: true },
+    { label: "Tal vez, todavía no es seguro", crece: true },
+    { label: "No, por ahora estable", crece: false }
+  ]
+};
 // TODO: pega aquí tu endpoint de Formspree (https://formspree.io/f/xxxxxxxx) para que el
 // lead se capture aunque la persona abandone el diagnóstico a la mitad. Mientras esté vacío,
 // no se envía nada (no rompe nada, solo no captura en tiempo real).
@@ -24,15 +48,6 @@ function submitLeadToFormspree(payload) {
 const REPSE_RISK_TEXT = "Para modalidad in-house, la ley exige que el proveedor de personal especializado esté registrado ante REPSE (STPS) — trabajar con un proveedor sin registro expone a la no deducibilidad de esos pagos y a responsabilidad solidaria en IMSS/INFONAVIT (Art. 15-A a 15-D LFT, multas de 2,000 a 50,000 UMA por subcontratación indebida). Grupo Sachman opera con REPSE vigente, así que ese riesgo queda cubierto si trabajas con nosotros en esa modalidad.";
 
 const HIDDEN_COST_QUESTIONS = [
-  {
-    id: "horas",
-    text: "¿Cuántas horas a la semana pasas resolviendo problemas de administración, pagos o nóminas?",
-    options: [
-      { label: "2 a 5 horas", hours: 3.5 },
-      { label: "5 a 10 horas", hours: 7.5 },
-      { label: "Más de 10 horas", hours: 12 }
-    ]
-  },
   {
     id: "infodia",
     text: "¿Tu información financiera está al día para tomar decisiones o se revisa hasta el cierre de mes?",
@@ -52,6 +67,16 @@ const HIDDEN_COST_QUESTIONS = [
     ]
   },
   {
+    id: "plantilla",
+    text: "¿Cuántas personas tienes hoy en nómina dedicadas a funciones administrativas (no ventas ni producción)?",
+    options: [
+      { label: "Ninguna — lo hago yo o está afuera", personas: 0 },
+      { label: "1 a 2 personas", personas: 1.5 },
+      { label: "3 a 5 personas", personas: 4 },
+      { label: "Más de 5 personas", personas: 6 }
+    ]
+  },
+  {
     id: "modalidad",
     text: "¿El servicio lo necesitas remoto o requieres personal trabajando dentro de tus instalaciones (in-house)?",
     options: [
@@ -62,19 +87,29 @@ const HIDDEN_COST_QUESTIONS = [
   }
 ];
 
-// hiddenAnswers: { horas: idx, infodia: idx, facturacion: idx, modalidad: idx }
-function computeHiddenCost(hiddenAnswers) {
-  const qHoras = HIDDEN_COST_QUESTIONS[0].options[hiddenAnswers.horas];
-  const qInfo = HIDDEN_COST_QUESTIONS[1].options[hiddenAnswers.infodia];
-  const qFact = HIDDEN_COST_QUESTIONS[2].options[hiddenAnswers.facturacion];
+// hiddenAnswers: { infodia: idx, facturacion: idx, plantilla: idx, modalidad: idx }
+// horasSemana: número de horas/semana capturado en la etapa ligera (LIGHT_HOURS_QUESTION)
+function computeHiddenCost(hiddenAnswers, horasSemana) {
+  const qInfo = HIDDEN_COST_QUESTIONS[0].options[hiddenAnswers.infodia];
+  const qFact = HIDDEN_COST_QUESTIONS[1].options[hiddenAnswers.facturacion];
+  const qPlant = HIDDEN_COST_QUESTIONS[2].options[hiddenAnswers.plantilla];
   const qRepse = HIDDEN_COST_QUESTIONS[3].options[hiddenAnswers.modalidad];
 
-  const costoTiempo = qHoras ? qHoras.hours * 4 * DIRECTOR_HOURLY_RATE : 0;
+  const costoTiempo = (typeof horasSemana === "number") ? horasSemana * 4 * DIRECTOR_HOURLY_RATE : 0;
   const costoIneficiencia = (qInfo && qInfo.retraso && qFact) ? qFact.monto * INEFICIENCIA_RATE : 0;
   const costoOcultoMensual = costoTiempo + costoIneficiencia;
   const riesgoRepse = !!(qRepse && qRepse.riesgo);
+  const personasPlantilla = qPlant ? qPlant.personas : 0;
+  const costoPlantilla = personasPlantilla * ADMIN_STAFF_COST_PER_PERSON;
 
-  return { costoTiempo: costoTiempo, costoIneficiencia: costoIneficiencia, costoOcultoMensual: costoOcultoMensual, riesgoRepse: riesgoRepse };
+  return {
+    costoTiempo: costoTiempo,
+    costoIneficiencia: costoIneficiencia,
+    costoOcultoMensual: costoOcultoMensual,
+    riesgoRepse: riesgoRepse,
+    personasPlantilla: personasPlantilla,
+    costoPlantilla: costoPlantilla
+  };
 }
 
 const SEGMENT_QUESTION = {
