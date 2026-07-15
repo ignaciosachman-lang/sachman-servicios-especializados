@@ -437,14 +437,52 @@ document.addEventListener("DOMContentLoaded", function () {
       html += "</div>";
     }
 
+    // Ya tenemos nombre, correo y celular desde el paso inicial — el registro se envía
+    // en automático, sin depender de que la persona haga clic en nada más.
+    const summaryLines = results.map(function (r) {
+      return "- " + r.area.label + ": riesgo " + r.result.level + (r.result.recommend ? " — " + formatMXN(r.priceMonthly) + "/mes (ahorras " + formatMXN(EQUIPO_BASE_COST - r.priceMonthly) + "/mes vs. equipo propio)" : " — sin urgencia");
+    });
+    const summaryBodyLines = [
+      "Segmento: " + seg.label,
+      "",
+      "Tu caos actual: " + formatMXN(hidden.costoOcultoMensual) + "/mes",
+      "Tu inversión con Sachman: " + formatMXN(inversionMensual) + "/mes" + (inversionEsFallback ? " (punto de partida sugerido)" : ""),
+      hidden.riesgoRepse ? "Alerta REPSE: " + REPSE_RISK_TEXT : "",
+      "",
+      "Áreas con riesgo medio/alto: " + (recommendedCount > 0 ? recommended.map(function (r) { return r.area.label; }).join(", ") : "ninguna"),
+      "",
+      "Detalle por área:",
+      summaryLines.join("\n"),
+      "",
+      recommendedCount > 0 ? "Fee mensual estimado (+ IVA): " + formatMXN(totalConGS) : "",
+      recommendedCount > 0 ? "Ahorro estimado vs. equipo propio: " + formatMXN(totalAhorro) + "/mes" : "",
+      "",
+      "Nombre: " + leadName.trim(),
+      "Correo: " + leadEmail.trim(),
+      "Celular: " + leadPhone.trim()
+    ].filter(function (l) { return l !== ""; });
+    const summaryBody = summaryBodyLines.join("\n");
+
+    submitLeadToFormspree({
+      nombre: leadName.trim(),
+      correo: leadEmail.trim(),
+      celular: leadPhone.trim(),
+      etapa: "Diagnóstico completo",
+      segmento: seg.label,
+      tu_caos_actual: formatMXN(hidden.costoOcultoMensual) + "/mes",
+      tu_inversion: formatMXN(inversionMensual) + "/mes",
+      resumen: summaryBody
+    });
+
+    const mailtoBase = "mailto:ignacio.sachman@livcampus.com?subject=" + encodeURIComponent("Diagnóstico operativo - " + seg.label) + "&body=";
+
     html += '<div class="diag-lead-box">';
-    html += "<h3>Recibe este diagnóstico completo por correo</h3>";
-    html += "<p class=\"sub\">Ya tenemos tu contacto (" + leadEmail + ") — confirma tu empresa y te lo enviamos. Un asesor lo revisa contigo en menos de 24 horas hábiles.</p>";
+    html += "<h3>¿Quieres una copia en tu correo?</h3>";
+    html += "<p class=\"sub\">Ya le avisamos a nuestro equipo con tus datos — un asesor te contacta en menos de 24 horas hábiles. Esto de aquí es opcional, solo si además quieres guardarte una copia.</p>";
     html += '<div class="contact-form">';
-    html += '<input type="text" id="d-company" placeholder="Empresa (opcional)">';
-    html += '<button type="button" class="btn btn-primary" id="diag-send-btn">Enviar mi diagnóstico</button>';
+    html += '<input type="text" id="d-company" placeholder="Empresa (opcional, se incluye en tu copia)">';
+    html += '<a class="btn btn-primary" id="diag-send-btn" href="' + mailtoBase + encodeURIComponent(summaryBody) + '">Enviarme una copia por correo</a>';
     html += "</div>";
-    html += '<div id="diag-lead-result" class="hidden" style="margin-top:14px; font-size:13px; color:var(--text-muted);"></div>';
     html += "</div>";
 
     resultsEl.innerHTML = html;
@@ -453,56 +491,10 @@ document.addEventListener("DOMContentLoaded", function () {
     navEl.classList.add("hidden");
     progressWrap.classList.add("hidden");
 
-    document.getElementById("diag-send-btn").addEventListener("click", function () {
-      const name = leadName.trim();
-      const email = leadEmail.trim();
-      const phone = leadPhone.trim();
-      const company = document.getElementById("d-company").value.trim();
-
-      const lines = results.map(function (r) {
-        return "- " + r.area.label + ": riesgo " + r.result.level + (r.result.recommend ? " — " + formatMXN(r.priceMonthly) + "/mes (ahorras " + formatMXN(EQUIPO_BASE_COST - r.priceMonthly) + "/mes vs. equipo propio)" : " — sin urgencia");
-      });
-      const bodyLines = [
-        "Segmento: " + seg.label,
-        "",
-        "Tu caos actual: " + formatMXN(hidden.costoOcultoMensual) + "/mes",
-        "Tu inversión con Sachman: " + formatMXN(inversionMensual) + "/mes" + (inversionEsFallback ? " (punto de partida sugerido)" : ""),
-        hidden.riesgoRepse ? "Alerta REPSE: " + REPSE_RISK_TEXT : "",
-        "",
-        "Áreas con riesgo medio/alto: " + (recommendedCount > 0 ? recommended.map(function (r) { return r.area.label; }).join(", ") : "ninguna"),
-        "",
-        "Detalle por área:",
-        lines.join("\n"),
-        "",
-        recommendedCount > 0 ? "Fee mensual estimado (+ IVA): " + formatMXN(totalConGS) : "",
-        recommendedCount > 0 ? "Ahorro estimado vs. equipo propio: " + formatMXN(totalAhorro) + "/mes" : "",
-        "",
-        "Nombre: " + name,
-        "Empresa: " + (company || "N/A"),
-        "Correo: " + email,
-        "Celular: " + phone
-      ].filter(function (l) { return l !== ""; });
-      const body = bodyLines.join("\n");
-
-      submitLeadToFormspree({
-        nombre: name,
-        correo: email,
-        celular: phone,
-        empresa: company || "N/A",
-        etapa: "Diagnóstico completo",
-        segmento: seg.label,
-        tu_caos_actual: formatMXN(hidden.costoOcultoMensual) + "/mes",
-        tu_inversion: formatMXN(inversionMensual) + "/mes",
-        resumen: body
-      });
-
-      const resultBox = document.getElementById("diag-lead-result");
-      resultBox.classList.remove("hidden");
-      resultBox.innerHTML =
-        "<p style='white-space:pre-line;'>" + body.replace(/\n/g, "<br>") + "</p>" +
-        '<a class="btn btn-primary" href="mailto:ignacio.sachman@livcampus.com?subject=' +
-        encodeURIComponent("Diagnóstico operativo - " + seg.label) +
-        "&body=" + encodeURIComponent(body) + '">Enviar por correo</a>';
+    document.getElementById("d-company").addEventListener("input", function (e) {
+      const company = e.target.value.trim();
+      const bodyWithCompany = company ? summaryBody + "\nEmpresa: " + company : summaryBody;
+      document.getElementById("diag-send-btn").href = mailtoBase + encodeURIComponent(bodyWithCompany);
     });
   }
 
