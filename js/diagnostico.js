@@ -348,6 +348,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const netoPositivo = hidden.costoOcultoMensual >= inversionMensual;
     const delta = netoPositivo ? (hidden.costoOcultoMensual - inversionMensual) : (inversionMensual - hidden.costoOcultoMensual);
 
+    // Lectura ejecutiva: qué factor pesa más y qué áreas están en el nivel más urgente.
+    const facturacionOpt = HIDDEN_COST_QUESTIONS[1].options[hiddenAnswers.facturacion];
+    const facturacionMensual = facturacionOpt ? facturacionOpt.monto : null;
+    const inversionPctVentas = facturacionMensual ? (inversionMensual / facturacionMensual) * 100 : null;
+    const factorPrincipalText = hidden.costoIneficiencia > hidden.costoTiempo
+      ? "la fuga por decisiones e información con retraso"
+      : "las horas que pasas resolviendo problemas en vez de dirigir";
+    const areasAltoRiesgo = results.filter(function (r) { return r.result.level === "Alto"; }).map(function (r) { return r.area.label; });
+    const lecturaEjecutiva = "El principal factor de tu costo oculto es " + factorPrincipalText + "."
+      + (areasAltoRiesgo.length > 0
+        ? " Las áreas en riesgo alto son " + areasAltoRiesgo.join(", ") + " — ahí es donde más urge actuar."
+        : " Ninguna área salió en riesgo alto — hoy tu prioridad es más de eficiencia que de riesgo urgente.");
+
     let html = '<div class="compare-hero">';
     html += '<p class="step-label" style="margin-bottom:6px;">Antes de tu diagnóstico por área</p>';
     html += '<h2 style="margin:0 0 18px;">Lo que te cuesta seguir así, contra lo que cuesta resolverlo</h2>';
@@ -374,6 +387,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (hidden.riesgoRepse) {
       html += '<div class="risk-alert"><i class="ti ti-alert-triangle" aria-hidden="true"></i><p>' + REPSE_RISK_TEXT + '</p></div>';
     }
+    html += '<div class="exec-reading">';
+    html += '<p class="exec-reading-title">Lectura ejecutiva</p>';
+    html += '<p>' + lecturaEjecutiva + '</p>';
+    if (inversionPctVentas !== null) {
+      html += '<div class="exec-stats">';
+      html += '<div class="exec-stat"><span class="es-value">' + inversionPctVentas.toFixed(2) + '%</span><span class="es-label">de tus ventas mensuales</span></div>';
+      html += '<div class="exec-stat"><span class="es-value">' + inversionPctVentas.toFixed(2) + ' pp</span><span class="es-label">de mejora de margen para que se pague sola</span></div>';
+      html += '</div>';
+    }
+    html += '</div>';
     html += '</div>';
 
     if (hidden.personasPlantilla > 0) {
@@ -447,6 +470,8 @@ document.addEventListener("DOMContentLoaded", function () {
       "",
       "Tu caos actual: " + formatMXN(hidden.costoOcultoMensual) + "/mes",
       "Tu inversión con Sachman: " + formatMXN(inversionMensual) + "/mes" + (inversionEsFallback ? " (punto de partida sugerido)" : ""),
+      inversionPctVentas !== null ? "Inversión / ventas mensuales: " + inversionPctVentas.toFixed(2) + "%" : "",
+      "Lectura ejecutiva: " + lecturaEjecutiva,
       hidden.riesgoRepse ? "Alerta REPSE: " + REPSE_RISK_TEXT : "",
       "",
       "Áreas con riesgo medio/alto: " + (recommendedCount > 0 ? recommended.map(function (r) { return r.area.label; }).join(", ") : "ninguna"),
