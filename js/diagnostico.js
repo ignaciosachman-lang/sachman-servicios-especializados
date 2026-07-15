@@ -287,7 +287,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (creceOpt.crece) {
       html += '<div class="risk-alert"><i class="ti ti-trending-up" aria-hidden="true"></i><p>' + GROWTH_WARNING_TEXT + '</p></div>';
     }
-    html += '<a class="btn btn-primary" id="btn-full-diagnostic" style="margin-top:20px;">Ver mi diagnóstico completo (5 min) →</a>';
+    const waMsgLight = "Hola, hice el diagnóstico ligero en el sitio" + (painArea ? " y quiero platicar sobre " + painArea.label : "") + ", ¿me pueden contactar?";
+    html += '<div class="wa-cta-row" style="margin-top:20px;">';
+    html += '<a class="btn btn-primary" id="btn-full-diagnostic">Ver mi diagnóstico completo (5 min) →</a>';
+    html += '<a class="btn btn-outline" href="' + whatsappLink(waMsgLight) + '" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Prefiero WhatsApp</a>';
+    html += "</div>";
     html += "</div>";
 
     resultsEl.innerHTML = html;
@@ -509,6 +513,9 @@ document.addEventListener("DOMContentLoaded", function () {
     html += '<a class="btn btn-primary" id="diag-send-btn" href="' + mailtoBase + encodeURIComponent(summaryBody) + '">Enviarme una copia por correo</a>';
     html += "</div>";
     html += "</div>";
+
+    const waMsgFull = "Hola, ya completé mi diagnóstico operativo (segmento " + seg.label + ") y me gustaría agendar una llamada.";
+    html += '<p class="wa-note"><a href="' + whatsappLink(waMsgFull) + '" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i> ¿Prefieres hablar ya? Escríbenos por WhatsApp</a></p>';
 
     resultsEl.innerHTML = html;
     resultsEl.classList.remove("hidden");

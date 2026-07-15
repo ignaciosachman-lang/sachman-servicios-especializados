@@ -8,6 +8,12 @@
 // - Marketing tiene precio base más alto en Persona física y PyME; en Gran empresa está
 //   unificado con el resto de las áreas (mismo precio base, mismo descuento).
 
+const WHATSAPP_NUMBER = "524424528401"; // WhatsApp Business de Grupo Sachman (formato internacional, sin +)
+
+function whatsappLink(message) {
+  return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+}
+
 const SEGMENTS = {
   pf: {
     id: "pf",

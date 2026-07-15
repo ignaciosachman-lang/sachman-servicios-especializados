@@ -915,6 +915,15 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 }
 .exec-stat .es-value { font-size: 20px; font-weight: 700; color: #fff; font-family: ui-monospace, Consolas, monospace; }
 .exec-stat .es-label { font-size: 11.5px; color: #cdd8e3; line-height: 1.4; }
+
+.wa-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.wa-cta-row .btn i { margin-right: 6px; }
+.wa-note { text-align: center; margin: 18px 0 0; font-size: 13.5px; }
+.wa-note a { display: inline-flex; align-items: center; gap: 6px; color: #1c9a53; font-weight: 600; text-decoration: none; }
+.wa-note a:hover { text-decoration: underline; }
+.wa-note i { font-size: 16px; }
+
+.footer-whatsapp { color: #25D366 !important; font-weight: 600; }
 @media (max-width: 640px) { .exec-stats { grid-template-columns: 1fr; } }
 
 .light-hero { max-width: 620px; text-align: left; }
