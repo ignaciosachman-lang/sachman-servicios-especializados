@@ -124,6 +124,13 @@ header.site-header {
 }
 .btn-dark-outline:hover { border-color: var(--teal); color: var(--teal-dark); }
 
+.btn-whatsapp-outline {
+  background: #fff;
+  border-color: rgba(37,211,102,0.5);
+  color: #128C4A;
+}
+.btn-whatsapp-outline:hover { background: #25D366; border-color: #25D366; color: #fff; }
+
 .hero {
   padding: 64px 0 72px;
 }
@@ -661,6 +668,7 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 }
 .cta-final h2 { font-size: 28px; margin: 0 0 12px; }
 .cta-final p { color: var(--text-muted); max-width: 520px; margin: 0 auto 24px; }
+.cta-final-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 .cta-final-photo {
   position: relative;
