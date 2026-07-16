@@ -3,9 +3,9 @@
   --navy: #1e2e4e;
   --navy-dark: #131d33;
   /* --teal ahora es el acento naranja de la marca (el nombre de la variable se quedó del esquema anterior) */
-  --teal: #f28f05;
-  --teal-dark: #8f5700;
-  --teal-soft: #ffe6d7;
+  --teal: #FF8A00;
+  --teal-dark: #B35900;
+  --teal-soft: #FFEAC2;
   --bg: #f4f6fa;
   --card: #ffffff;
   --border: #e2e6ed;
@@ -35,10 +35,11 @@ a { color: inherit; }
 
 header.site-header {
   background:
-    radial-gradient(circle at 85% -10%, rgba(242,143,5,0.18), transparent 45%),
-    radial-gradient(ellipse at 10% 110%, rgba(242,143,5,0.10), transparent 50%),
-    var(--navy);
-  color: #fff;
+    radial-gradient(circle at 85% -10%, rgba(255,138,0,0.10), transparent 45%),
+    radial-gradient(ellipse at 10% 110%, rgba(30,46,78,0.06), transparent 50%),
+    #fff;
+  color: var(--navy);
+  border-bottom: 1px solid var(--border);
   position: relative;
 }
 
@@ -57,7 +58,7 @@ header.site-header {
   font-weight: 600;
   font-size: 18px;
   text-decoration: none;
-  color: #fff;
+  color: var(--navy);
 }
 
 .brand-mark {
@@ -85,11 +86,11 @@ header.site-header {
 
 .nav-links a {
   text-decoration: none;
-  color: #cdd8e3;
+  color: var(--text-muted);
 }
 
 .nav-links a:hover, .nav-links a.active {
-  color: #fff;
+  color: var(--navy);
 }
 
 .btn {
@@ -145,24 +146,24 @@ header.site-header {
   margin: 0 0 22px;
   max-width: 640px;
 }
-.hero-headline .line-1 { color: #fff; }
+.hero-headline .line-1 { color: var(--navy); }
 .hero-headline .line-2 { color: var(--teal); }
 
 .hero p.hero-punch {
   font-size: 19px;
   line-height: 1.55;
-  color: #fff;
+  color: var(--navy);
   max-width: 600px;
   margin: 0 0 22px;
   padding: 14px 20px;
   border-left: 3px solid var(--teal);
-  background: rgba(242,143,5,0.14);
+  background: rgba(255,138,0,0.1);
 }
-.hero p.hero-punch strong { color: var(--teal); }
+.hero p.hero-punch strong { color: var(--teal-dark); }
 
 .hero p.hero-body {
   max-width: 580px;
-  color: #cdd8e3;
+  color: var(--text-muted);
   font-size: 16px;
   margin: 0 0 22px;
 }
@@ -175,10 +176,10 @@ header.site-header {
 }
 .hero-negation p {
   margin: 0;
-  color: #7d8fa3;
+  color: #9aa6b8;
   font-size: 13px;
   text-decoration: line-through;
-  text-decoration-color: #4a5b6e;
+  text-decoration-color: #c3cbd6;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -189,11 +190,11 @@ header.site-header {
   font-size: 21px;
   font-weight: 500;
   line-height: 1.4;
-  color: #fff;
+  color: var(--navy);
   max-width: 580px;
   margin: 0 0 30px;
 }
-.hero p.hero-transform strong { color: var(--teal); }
+.hero p.hero-transform strong { color: var(--teal-dark); }
 
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -286,21 +287,19 @@ footer.site-footer a { color: #cdd8e3; text-decoration: none; }
 /* ---------- Cotizador ---------- */
 
 .cotizador-page-header {
-  background: var(--navy);
-  color: #fff;
   padding: 40px 0;
 }
-.cotizador-page-header h1 { margin: 0 0 8px; font-size: 28px; }
-.cotizador-page-header p { margin: 0; color: #cdd8e3; max-width: 600px; }
+.cotizador-page-header h1 { margin: 0 0 8px; font-size: 28px; color: var(--navy); }
+.cotizador-page-header p { margin: 0; color: var(--text-muted); max-width: 600px; }
 .cotizador-page-header p.diag-intro-hook {
   font-size: 17px;
   line-height: 1.6;
-  color: #fff;
+  color: var(--navy);
   max-width: 640px;
   margin: 0 0 16px;
   padding: 14px 18px;
   border-left: 3px solid var(--teal);
-  background: rgba(242,143,5,0.12);
+  background: rgba(255,138,0,0.1);
 }
 
 .cotizador-layout {
@@ -563,8 +562,9 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 }
 .problema-cell p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--text); }
 .problema-highlight {
-  background: var(--navy);
-  color: #fff;
+  background: #fff;
+  border: 1.5px solid var(--teal);
+  color: var(--navy);
   display: flex; align-items: center; justify-content: center;
   padding: 32px 28px;
 }
@@ -592,7 +592,7 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 
 .repse-pill {
   display: inline-flex; align-items: center; gap: 10px;
-  background: var(--teal-soft); border: 1px solid rgba(242,143,5,0.4);
+  background: var(--teal-soft); border: 1px solid rgba(255,138,0,0.4);
   border-radius: 6px; padding: 10px 16px;
   font-size: 14px; font-weight: 600; color: var(--teal-dark);
 }
@@ -839,7 +839,7 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
   padding: 20px 20px 22px;
 }
 .compare-card.chaos { background: #3a1414; }
-.compare-card.order { background: rgba(242,143,5,0.16); border: 1px solid rgba(242,143,5,0.4); }
+.compare-card.order { background: rgba(255,138,0,0.16); border: 1px solid rgba(255,138,0,0.4); }
 
 .compare-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 8px; }
 .compare-card.chaos .compare-label { color: #f0a3a3; }

@@ -1,8 +1,8 @@
 <svg viewBox="0 0 960 640" xmlns="http://www.w3.org/2000/svg" font-family="'Open Sans', Arial, sans-serif">
   <defs>
     <linearGradient id="orangeGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#F28F05"/>
-      <stop offset="100%" stop-color="#c97300"/>
+      <stop offset="0%" stop-color="#FF8A00"/>
+      <stop offset="100%" stop-color="#B35900"/>
     </linearGradient>
   </defs>
 
@@ -12,7 +12,7 @@
   <rect x="0" y="32" width="960" height="20" fill="#1E2E4E"/>
   <circle cx="30" cy="26" r="6" fill="#8fa0b8" opacity="0.5"/>
   <circle cx="50" cy="26" r="6" fill="#8fa0b8" opacity="0.5"/>
-  <circle cx="70" cy="26" r="6" fill="#F28F05"/>
+  <circle cx="70" cy="26" r="6" fill="#FF8A00"/>
   <text x="96" y="31" font-size="15" font-weight="700" fill="#cdd8e3">Panel operativo &#183; Diagn&#243;stico Grupo Sachman</text>
 
   <!-- Card A: caos -->
@@ -51,7 +51,7 @@
   <!-- KPI strip -->
   <rect x="32" y="398" width="290" height="120" rx="14" fill="#1c2942" stroke="#2c3c5c" stroke-width="1"/>
   <text x="56" y="432" font-size="13" font-weight="700" fill="#8fa0b8">RIESGO ALTO DETECTADO</text>
-  <text x="56" y="480" font-size="32" font-weight="800" fill="#F28F05">2 &#225;reas</text>
+  <text x="56" y="480" font-size="32" font-weight="800" fill="#FF8A00">2 &#225;reas</text>
 
   <rect x="335" y="398" width="290" height="120" rx="14" fill="#1c2942" stroke="#2c3c5c" stroke-width="1"/>
   <text x="359" y="432" font-size="13" font-weight="700" fill="#8fa0b8">AHORRO ESTIMADO</text>
