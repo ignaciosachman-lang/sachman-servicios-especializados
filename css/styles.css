@@ -466,22 +466,14 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 .centered { text-align: center; }
 .centered .section-sub { margin-left: auto; margin-right: auto; }
 
-.hero-2col {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 48px;
-  align-items: center;
+.hero-center {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
 }
-@media (max-width: 860px) { .hero-2col { grid-template-columns: 1fr; } }
-
-.hero-visual {
-  aspect-ratio: 3 / 2;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--navy-dark);
-  box-shadow: 0 30px 60px -25px rgba(19,29,51,0.45);
-}
-.hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-center .hero-headline { align-items: center; text-align: center; margin-left: auto; margin-right: auto; }
+.hero-center .hero-subtitle { margin-left: auto; margin-right: auto; }
+.hero-center .hero-actions { justify-content: center; }
 
 .trust-bar {
   background: #eef2f8;
