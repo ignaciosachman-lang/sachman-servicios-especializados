@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const LIGHT_TOTAL = 3; // dolor, horas, crecimiento
   let phase = "light"; // "light" (sin gate) -> "full" (con gate, el flujo completo)
   let lightStep = 0;
-  const lightAnswers = {}; // painArea: areaId|"ninguna", horas: idx, crecimiento: idx
+  const lightAnswers = {}; // painAreas: [areaId,...]|["ninguna"], horas: idx, crecimiento: idx
 
   const AREA_OFFSET = 2; // pasos 0=contacto, 1=segmento, así que el área empieza en el paso 2
   const TOTAL_STEPS = AREA_OFFSET + DIAGNOSTIC_AREAS.length + 1; // contacto + segmento + 7 áreas + costo oculto
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const hiddenAnswers = {}; // infodia/facturacion/plantilla/modalidad -> optionIndex
 
   function isLightStepComplete() {
-    if (lightStep === 0) return typeof lightAnswers.painArea !== "undefined";
+    if (lightStep === 0) return Array.isArray(lightAnswers.painAreas) && lightAnswers.painAreas.length > 0;
     if (lightStep === 1) return typeof lightAnswers.horas === "number";
     if (lightStep === 2) return typeof lightAnswers.crecimiento === "number";
     return false;
@@ -35,13 +35,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function renderLightStep() {
     let html = "";
     if (lightStep === 0) {
-      html += '<p class="step-label">Identifiquemos el dolor primero</p><h3 class="diag-question-title">¿Cuál de estas áreas te quita más el sueño hoy?</h3>';
+      html += '<p class="step-label">Identifiquemos el dolor primero</p><h3 class="diag-question-title">¿Cuáles de estas áreas te quitan más el sueño hoy?</h3><p class="diag-question-intro">Puedes elegir más de una.</p>';
       html += '<div class="diag-options">';
       DIAGNOSTIC_AREAS.forEach(function (area) {
-        const active = lightAnswers.painArea === area.id;
+        const active = (lightAnswers.painAreas || []).indexOf(area.id) >= 0;
         html += '<div class="diag-option' + (active ? " active" : "") + '" data-pain="' + area.id + '"><i class="ti ' + area.icon + '" aria-hidden="true" style="margin-right:8px;"></i>' + area.label + "</div>";
       });
-      const activeNone = lightAnswers.painArea === "ninguna";
+      const activeNone = (lightAnswers.painAreas || []).indexOf("ninguna") >= 0;
       html += '<div class="diag-option' + (activeNone ? " active" : "") + '" data-pain="ninguna">No sé, todo se siente desordenado</div>';
       html += "</div>";
     } else if (lightStep === 1) {
@@ -65,7 +65,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     stepEl.querySelectorAll(".diag-option[data-pain]").forEach(function (el) {
       el.addEventListener("click", function () {
-        lightAnswers.painArea = el.getAttribute("data-pain");
+        const val = el.getAttribute("data-pain");
+        if (!Array.isArray(lightAnswers.painAreas)) lightAnswers.painAreas = [];
+        if (val === "ninguna") {
+          lightAnswers.painAreas = lightAnswers.painAreas.indexOf("ninguna") >= 0 ? [] : ["ninguna"];
+        } else {
+          lightAnswers.painAreas = lightAnswers.painAreas.filter(function (v) { return v !== "ninguna"; });
+          const idx = lightAnswers.painAreas.indexOf(val);
+          if (idx >= 0) lightAnswers.painAreas.splice(idx, 1);
+          else lightAnswers.painAreas.push(val);
+        }
         renderLightStep();
         updateNav();
       });
@@ -206,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     else renderAreaStep();
     progressFill.style.width = Math.round(((currentStep + 1) / (TOTAL_STEPS + 1)) * 100) + "%";
     progressLabel.textContent = "Paso " + (currentStep + 1) + " de " + (TOTAL_STEPS + 1);
-    backBtn.disabled = currentStep === 0;
+    backBtn.disabled = false;
     updateNav();
   }
 
@@ -231,7 +240,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (currentStep > 0) {
       currentStep -= 1;
       renderStep();
+      return;
     }
+    // currentStep === 0 (gate): no hay paso previo dentro de la fase completa,
+    // regresamos al teaser del diagnóstico ligero en vez de dejar el botón sin efecto.
+    phase = "light";
+    showLightResults();
   });
 
   nextBtn.addEventListener("click", function () {
@@ -270,9 +284,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function showLightResults() {
-    const painArea = (lightAnswers.painArea && lightAnswers.painArea !== "ninguna")
-      ? DIAGNOSTIC_AREAS.find(function (a) { return a.id === lightAnswers.painArea; })
-      : null;
+    const painAreaIds = (lightAnswers.painAreas || []).filter(function (v) { return v !== "ninguna"; });
+    const painAreas = painAreaIds
+      .map(function (id) { return DIAGNOSTIC_AREAS.find(function (a) { return a.id === id; }); })
+      .filter(Boolean);
     const horasOpt = LIGHT_HOURS_QUESTION.options[lightAnswers.horas];
     const costoTiempo = horasOpt.hours * 4 * DIRECTOR_HOURLY_RATE;
     const creceOpt = LIGHT_GROWTH_QUESTION.options[lightAnswers.crecimiento];
@@ -280,14 +295,15 @@ document.addEventListener("DOMContentLoaded", function () {
     let html = '<div class="compare-hero light-hero">';
     html += '<p class="step-label" style="margin-bottom:6px; color:#cdd8e3;">Diagnóstico ligero</p>';
     html += '<h2 style="margin:0 0 16px;">Esto detectamos con 3 preguntas</h2>';
-    if (painArea) {
-      html += '<p class="light-pain"><i class="ti ' + painArea.icon + '" aria-hidden="true"></i> Tu prioridad hoy: <strong>' + painArea.label + '</strong></p>';
+    if (painAreas.length) {
+      const painLabels = painAreas.map(function (a) { return a.label; }).join(", ");
+      html += '<p class="light-pain"><i class="ti ' + painAreas[0].icon + '" aria-hidden="true"></i> ' + (painAreas.length > 1 ? "Tus prioridades hoy: " : "Tu prioridad hoy: ") + '<strong>' + painLabels + '</strong></p>';
     }
     html += '<p class="light-cost">Solo en tiempo resolviendo problemas en vez de dirigir, tu operación pierde aprox. <strong>' + formatMXN(costoTiempo) + '/mes</strong>.</p>';
     if (creceOpt.crece) {
       html += '<div class="risk-alert"><i class="ti ti-trending-up" aria-hidden="true"></i><p>' + GROWTH_WARNING_TEXT + '</p></div>';
     }
-    const waMsgLight = "Hola, hice el diagnóstico ligero en el sitio" + (painArea ? " y quiero platicar sobre " + painArea.label : "") + ", ¿me pueden contactar?";
+    const waMsgLight = "Hola, hice el diagnóstico ligero en el sitio" + (painAreas.length ? " y quiero platicar sobre " + painAreas.map(function (a) { return a.label; }).join(", ") : "") + ", ¿me pueden contactar?";
     html += '<div class="wa-cta-row" style="margin-top:20px;">';
     html += '<a class="btn btn-primary" id="btn-full-diagnostic">Ver mi diagnóstico completo (5 min) →</a>';
     html += '<a class="btn btn-outline" href="' + whatsappLink(waMsgLight) + '" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Prefiero WhatsApp</a>';
