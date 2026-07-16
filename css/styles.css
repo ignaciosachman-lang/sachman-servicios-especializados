@@ -135,73 +135,25 @@ header.site-header {
   padding: 64px 0 72px;
 }
 
-.eyebrow {
-  color: var(--teal);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin: 0 0 12px;
-}
-
 .hero-headline {
   display: flex;
   flex-direction: column;
   font-size: 46px;
   line-height: 1.14;
   font-weight: 600;
-  margin: 0 0 22px;
+  margin: 0 0 20px;
   max-width: 640px;
 }
 .hero-headline .line-1 { color: var(--navy); }
 .hero-headline .line-2 { color: var(--teal); }
 
-.hero p.hero-punch {
+.hero-subtitle {
   font-size: 19px;
-  line-height: 1.55;
-  color: var(--navy);
-  max-width: 600px;
-  margin: 0 0 22px;
-  padding: 14px 20px;
-  border-left: 3px solid var(--teal);
-  background: rgba(255,138,0,0.1);
-}
-.hero p.hero-punch strong { color: var(--teal-dark); }
-
-.hero p.hero-body {
-  max-width: 580px;
+  line-height: 1.5;
   color: var(--text-muted);
-  font-size: 16px;
-  margin: 0 0 22px;
-}
-
-.hero-negation {
-  display: flex;
-  gap: 22px;
-  flex-wrap: wrap;
-  margin: 0 0 14px;
-}
-.hero-negation p {
-  margin: 0;
-  color: #9aa6b8;
-  font-size: 13px;
-  text-decoration: line-through;
-  text-decoration-color: #c3cbd6;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.hero-negation i { font-size: 13px; }
-
-.hero p.hero-transform {
-  font-size: 21px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--navy);
-  max-width: 580px;
+  max-width: 480px;
   margin: 0 0 30px;
 }
-.hero p.hero-transform strong { color: var(--teal-dark); }
 
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
@@ -522,19 +474,14 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 }
 @media (max-width: 860px) { .hero-2col { grid-template-columns: 1fr; } }
 
-.hero-photo {
-  height: 480px;
+.hero-visual {
+  aspect-ratio: 3 / 2;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  position: relative;
+  background: var(--navy-dark);
+  box-shadow: 0 30px 60px -25px rgba(19,29,51,0.45);
 }
-.hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.hero-photo::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(7,28,51,0.55) 100%);
-}
-@media (max-width: 860px) { .hero-photo { height: 300px; } }
+.hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .trust-bar {
   background: #eef2f8;
