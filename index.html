@@ -47,15 +47,47 @@
   </div>
 </div>
 
-<section id="problema">
-  <div class="container">
-    <h2 class="section-title">Si diriges una empresa en crecimiento, esto te suena familiar</h2>
-    <p class="section-sub">Tres señales de que tu operación te está controlando a ti, y no al revés.</p>
-    <div class="problema-lines">
-      <div class="problema-line"><span class="n">01</span><p>No sabes cuánto dinero entra, sale o se está fugando en tu empresa — hasta que ya es tarde.</p></div>
-      <div class="problema-line"><span class="n">02</span><p>Toda tu operación depende de ti o de una o dos personas más. Si alguien falta, todo se detiene contigo.</p></div>
-      <div class="problema-line"><span class="n">03</span><p>Pasas más tiempo apagando fuegos y decidiendo a ciegas que dirigiendo tu negocio.</p></div>
-      <p class="problema-punch">Ninguna de estas señales se resuelve <strong>contratando una persona más.</strong></p>
+<section id="problema" class="senales">
+  <div class="container senales-grid">
+    <div class="senales-head">
+      <h2>Tu empresa está creciendo, pero tú sigues resolviendo todo<span class="soft">…</span> no estás escalando. <span class="accent">Estás atrapado.</span></h2>
+      <p class="senales-lead">Estas son las señales</p>
+
+      <div class="senal-card"><span class="num">01</span><p>No controlas tu dinero. Solo lo descubres cuando ya hay problemas.</p></div>
+      <div class="senal-card"><span class="num">02</span><p>Tu operación depende de ti o de unos pocos. Sin ellos, tu empresa se detiene.</p></div>
+      <div class="senal-card"><span class="num">03</span><p>No diriges tu negocio. Lo sobrevives. Pasas tu tiempo corrigiendo lo que debería funcionar solo.</p></div>
+
+      <p class="senales-punch">Contratar más gente no arregla esto. Solo lo hace <strong>más caro.</strong></p>
+    </div>
+
+    <div class="dash-wrap">
+      <div class="dash-panel">
+        <div class="dash-top">
+          <span class="dash-title">Flujo de caja &middot; últimos 30 días</span>
+          <span class="dash-live"><span class="dot"></span> Sin visibilidad</span>
+        </div>
+        <div class="dash-chart">
+          <svg viewBox="0 0 400 150" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c94545" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#c94545" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="30" x2="400" y2="30" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <line x1="0" y1="75" x2="400" y2="75" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <line x1="0" y1="120" x2="400" y2="120" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+            <path d="M0,60 L40,45 L80,90 L120,55 L160,100 L200,70 L240,115 L280,80 L320,125 L360,95 L400,130 L400,150 L0,150 Z" fill="url(#areaGrad)"/>
+            <polyline points="0,60 40,45 80,90 120,55 160,100 200,70 240,115 280,80 320,125 360,95 400,130" fill="none" stroke="#e2704f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="400" cy="130" r="4" fill="#e2704f"/>
+          </svg>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat"><div class="v">47</div><div class="l">días sin conciliar</div></div>
+          <div class="dash-stat"><div class="v">3</div><div class="l">decisiones a ciegas esta semana</div></div>
+        </div>
+      </div>
+      <p class="dash-caption">Así se ve tu operación cuando nadie más puede leerla por ti.</p>
     </div>
   </div>
 </section>
