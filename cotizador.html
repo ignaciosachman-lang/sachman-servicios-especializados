@@ -39,8 +39,14 @@
         <p class="step-label">Paso 1 &middot; Segmento</p>
         <div class="segment-tabs" id="segment-tabs"></div>
 
-        <p class="step-label">Paso 2 &middot; Áreas de servicio</p>
+        <p class="step-label">Paso 2 &middot; Facturación mensual aproximada</p>
+        <input type="number" id="f-facturacion" class="facturacion-input" placeholder="Ej. 250000" min="0" step="1000">
+        <p class="field-hint">La usamos para avisarte si el paquete que armes es un % muy alto de lo que factura tu empresa.</p>
+
+        <p class="step-label">Paso 3 &middot; Áreas de servicio</p>
         <div class="area-grid" id="area-grid"></div>
+
+        <div id="volume-panel"></div>
       </div>
 
       <aside class="summary-card">
@@ -57,9 +63,10 @@
         </div>
         <p class="summary-note" id="summary-note"></p>
         <p class="savings-note" id="savings-note"></p>
+        <div id="tope-warning" class="tope-warning hidden"></div>
 
         <form id="contact-form" class="contact-form">
-          <p class="step-label" style="margin-top:10px;">Paso 3 &middot; Recibir propuesta</p>
+          <p class="step-label" style="margin-top:10px;">Paso 4 &middot; Recibir propuesta</p>
           <input type="text" id="f-name" placeholder="Nombre completo" required>
           <input type="text" id="f-company" placeholder="Empresa (opcional)">
           <input type="email" id="f-email" placeholder="Correo electrónico" required>
@@ -81,6 +88,7 @@
 </footer>
 
 <script src="js/pricing-data.js"></script>
+<script src="js/activity-costing-data.js"></script>
 <script src="js/cotizador.js"></script>
 </body>
 </html>

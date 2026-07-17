@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let leadPhone = "";
   const answers = {}; // questionId -> optionIndex (preguntas de área)
   const hiddenAnswers = {}; // infodia/facturacion/plantilla/modalidad -> optionIndex
+  const volumeAnswers = {}; // { [areaId]: { [driver]: cantidad } } -- volumen real de operación por área
 
   function isLightStepComplete() {
     if (lightStep === 0) return Array.isArray(lightAnswers.painAreas) && lightAnswers.painAreas.length > 0;
@@ -163,6 +164,18 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       html += "</div></div>";
     });
+
+    const drivers = segmentId ? getAreaVolumeDrivers(area.id, segmentId) : [];
+    if (drivers.length) {
+      if (!volumeAnswers[area.id]) volumeAnswers[area.id] = {};
+      html += '<div class="volume-block"><h4><i class="ti ti-chart-bar" aria-hidden="true"></i> Volumen real de tu operación (para afinar el precio)</h4><div class="volume-fields">';
+      drivers.forEach(function (d, i) {
+        const current = typeof volumeAnswers[area.id][d.driver] === "number" ? volumeAnswers[area.id][d.driver] : d.volumenBase;
+        html += '<label class="volume-field"><span>' + d.driver + '</span><input type="number" id="vol-' + i + '" min="0" step="1" value="' + current + '" data-driver="' + d.driver.replace(/"/g, "&quot;") + '"></label>';
+      });
+      html += "</div></div>";
+    }
+
     stepEl.innerHTML = html;
 
     stepEl.querySelectorAll(".diag-option").forEach(function (el) {
@@ -171,6 +184,14 @@ document.addEventListener("DOMContentLoaded", function () {
         answers[qid] = parseInt(el.getAttribute("data-idx"), 10);
         renderAreaStep();
         updateNav();
+      });
+    });
+
+    stepEl.querySelectorAll(".volume-field input").forEach(function (input) {
+      input.addEventListener("input", function () {
+        const driver = input.getAttribute("data-driver");
+        const val = parseFloat(input.value);
+        volumeAnswers[area.id][driver] = isNaN(val) ? 0 : val;
       });
     });
   }
@@ -329,6 +350,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function volumePrice(areaId, count) {
+    const base = computeAreaPriceByVolume(areaId, segmentId, volumeAnswers[areaId]);
+    return base * (1 - bundleDiscount(segmentId, count));
+  }
+
   function showResults() {
     const seg = SEGMENTS[segmentId];
     const results = DIAGNOSTIC_AREAS.map(function (area) {
@@ -340,8 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let totalConGS = 0;
     let totalEquipoPropio = 0;
     recommended.forEach(function (r) {
-      const areaObj = AREAS.find(function (a) { return a.id === r.area.id; });
-      const price = areaPrice(areaObj, segmentId, recommendedCount, false);
+      const price = volumePrice(r.area.id, recommendedCount);
       totalConGS += price;
       totalEquipoPropio += EQUIPO_BASE_COST;
       r.priceMonthly = price;
@@ -358,8 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let inversionMensual = totalConGS;
     let inversionEsFallback = false;
     if (recommendedCount === 0) {
-      const fallbackArea = AREAS.find(function (a) { return a.id === "administracion"; });
-      inversionMensual = areaPrice(fallbackArea, segmentId, 1, false);
+      inversionMensual = volumePrice("administracion", 1);
       inversionEsFallback = true;
     }
 
@@ -372,6 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const facturacionOpt = HIDDEN_COST_QUESTIONS[1].options[hiddenAnswers.facturacion];
     const facturacionMensual = facturacionOpt ? facturacionOpt.monto : null;
     const inversionPctVentas = facturacionMensual ? (inversionMensual / facturacionMensual) * 100 : null;
+    const tope = checkTopeFacturacion(inversionMensual, facturacionMensual, recommendedCount || 1);
     const factorPrincipalText = hidden.costoIneficiencia > hidden.costoTiempo
       ? "la fuga por decisiones e información con retraso"
       : "las horas que pasas resolviendo problemas en vez de dirigir";
@@ -406,6 +431,9 @@ document.addEventListener("DOMContentLoaded", function () {
       : 'La diferencia (' + formatMXN(delta) + '/mes) es la inversión en dejar de operar a ciegas: recuperas tu tiempo, tienes cumplimiento REPSE y visibilidad real.') + '</p>';
     if (hidden.riesgoRepse) {
       html += '<div class="risk-alert"><i class="ti ti-alert-triangle" aria-hidden="true"></i><p>' + REPSE_RISK_TEXT + '</p></div>';
+    }
+    if (tope.excede) {
+      html += '<div class="tope-warning" style="margin-top:14px;"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Este estimado es ' + (tope.pct * 100).toFixed(1) + '% de tu facturación mensual — más del ' + (tope.tope * 100).toFixed(0) + '% que solemos recomendar. Empezar con las 1-2 áreas de mayor riesgo (en vez del paquete completo) suele ser el mejor punto de partida.</div>';
     }
     html += '<div class="exec-reading">';
     html += '<p class="exec-reading-title">Lectura ejecutiva</p>';
@@ -493,6 +521,7 @@ document.addEventListener("DOMContentLoaded", function () {
       inversionPctVentas !== null ? "Inversión / ventas mensuales: " + inversionPctVentas.toFixed(2) + "%" : "",
       "Lectura ejecutiva: " + lecturaEjecutiva,
       hidden.riesgoRepse ? "Alerta REPSE: " + REPSE_RISK_TEXT : "",
+      tope.excede ? "Nota: el fee es " + (tope.pct * 100).toFixed(1) + "% de la facturación mensual, por encima del " + (tope.tope * 100).toFixed(0) + "% recomendado." : "",
       "",
       "Áreas con riesgo medio/alto: " + (recommendedCount > 0 ? recommended.map(function (r) { return r.area.label; }).join(", ") : "ninguna"),
       "",
