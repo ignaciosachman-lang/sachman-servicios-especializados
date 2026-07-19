@@ -448,6 +448,38 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
   display: none;
 }
 
+.gate-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy);
+  padding: 24px;
+}
+.gate-box {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 30px 60px -25px rgba(19,29,51,0.5);
+}
+.gate-box .brand { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 16px; }
+.gate-box h2 { font-size: 18px; margin: 0 0 8px; }
+.gate-box p { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+.gate-box form { display: flex; flex-direction: column; gap: 10px; }
+.gate-box input {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  font-family: inherit;
+}
+.gate-box .error-text { text-align: center; }
+
 .facturacion-input {
   width: 100%;
   max-width: 280px;

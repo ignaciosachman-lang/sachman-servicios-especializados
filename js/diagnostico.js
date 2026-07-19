@@ -497,14 +497,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       html += '<div class="diag-summary-total"><span>Fee mensual estimado (+ IVA)</span><span class="amount">' + formatMXN(totalConGS) + "</span></div>";
       html += '<p class="savings-note" style="display:block;">Ahorro estimado vs. armar tu propio equipo para estas áreas: ' + formatMXN(totalAhorro) + "/mes.</p>";
-      const areaIds = recommended.map(function (r) { return r.area.id; }).join(",");
-      html += '<a class="btn btn-primary" style="margin-top:14px;" href="cotizador.html?segmento=' + segmentId + "&areas=" + areaIds + '">Ajustar y ver cotización completa</a>';
+      html += '<a class="btn btn-primary" style="margin-top:14px;" href="' + whatsappLink("Hola, ya vi mi diagnóstico operativo (segmento " + seg.label + ") y quiero platicar sobre precio y alcance con un asesor.") + '" target="_blank" rel="noopener">Platicar con un asesor sobre precio y alcance</a>';
       html += "</div>";
     } else {
       html += '<div class="diag-summary-box">';
       html += "<h3>Tus 7 áreas salieron en riesgo bajo</h3>";
-      html += "<p>No es urgente contratar todavía, pero el costo oculto de arriba no depende del riesgo por área — es tiempo y fricción real. Explora el cotizador cuando quieras ajustar un paquete a la medida.</p>";
-      html += '<a class="btn btn-primary" style="margin-top:14px;" href="cotizador.html?segmento=' + segmentId + '">Ver el cotizador de referencia</a>';
+      html += "<p>No es urgente contratar todavía, pero el costo oculto de arriba no depende del riesgo por área — es tiempo y fricción real. Un asesor te puede orientar sobre por dónde empezar.</p>";
+      html += '<a class="btn btn-primary" style="margin-top:14px;" href="' + whatsappLink("Hola, ya vi mi diagnóstico operativo (segmento " + seg.label + ") y me gustaría platicar con un asesor.") + '" target="_blank" rel="noopener">Platicar con un asesor</a>';
       html += "</div>";
     }
 

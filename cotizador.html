@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Cotizador · Grupo Sachman</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +12,21 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+<div id="gate-lock" class="gate-screen">
+  <div class="gate-box">
+    <div class="brand" style="margin-bottom:18px; color:var(--navy);"><span class="brand-mark">GS</span> Grupo Sachman</div>
+    <h2>Acceso para equipo de ventas</h2>
+    <p>Esta herramienta es de uso interno. Ingresa el PIN para continuar.</p>
+    <form id="gate-form">
+      <input type="password" id="gate-pin" placeholder="PIN" inputmode="numeric" autocomplete="off">
+      <span class="error-text" id="gate-error">PIN incorrecto.</span>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<div id="gate-content" class="hidden">
 
 <header class="site-header">
   <div class="container nav">
@@ -87,8 +103,11 @@
   </div>
 </footer>
 
+</div>
+
 <script src="js/pricing-data.js"></script>
 <script src="js/activity-costing-data.js"></script>
 <script src="js/cotizador.js"></script>
+<script src="js/cotizador-gate.js"></script>
 </body>
 </html>
