@@ -799,6 +799,10 @@ body.landing-page { margin: 0; background: var(--navy-dark); }
 .brand-bar { position: fixed; top: 28px; left: 6vw; right: 6vw; z-index: 5; display: flex; align-items: center; justify-content: space-between; color: #fff; }
 .brand-bar .brand { font-weight: 800; font-size: 17px; display: flex; align-items: center; gap: 8px; color: #fff; }
 .brand-bar .brand .dot { width: 8px; height: 8px; background: var(--teal); border-radius: 50%; display: inline-block; }
+.slide-nav { display: flex; gap: 26px; }
+.slide-nav a { color: #EAEEF6; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.slide-nav a:hover { color: var(--teal); }
+@media (max-width: 860px) { .slide-nav { display: none; } }
 .counter { color: var(--text-muted); font-weight: 700; font-size: 14px; letter-spacing: .05em; font-variant-numeric: tabular-nums; }
 .dots { position: fixed; right: 5vw; top: 50%; transform: translateY(-50%); z-index: 5; display: flex; flex-direction: column; gap: 14px; }
 .dots button { width: 9px; height: 9px; padding: 0; border-radius: 50%; cursor: pointer; background: rgba(255,255,255,.35); border: none; transition: background .3s; }
