@@ -556,38 +556,93 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-/* ---------- Soluciones ---------- */
+/* ---------- Páginas de contenido (Soluciones / Equipo / Contacto) ---------- */
 
-.soluciones-benefits {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.page-hero {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px 32px;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+  padding: 48px 0;
 }
-.soluciones-benefits li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--text);
-}
-.soluciones-benefits li i {
-  flex-shrink: 0;
-  color: var(--teal-dark);
-  font-size: 18px;
-  margin-top: 2px;
-}
+@media (max-width: 860px) { .page-hero { grid-template-columns: 1fr; } }
 
-.soluciones-final-cta {
-  text-align: center;
-  max-width: 560px;
+.page-hero-eyebrow {
+  color: var(--teal-dark);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 13.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
 }
-.soluciones-final-cta h2 { font-size: 26px; margin: 0 0 10px; }
-.soluciones-final-cta p { color: var(--text-muted); margin: 0 0 24px; }
-.soluciones-final-cta .hero-actions { justify-content: center; }
+.page-hero h1 { color: var(--navy); font-size: clamp(28px, 4vw, 44px); font-weight: 800; line-height: 1.15; margin: 0 0 20px; text-wrap: pretty; }
+.page-hero p { color: var(--text-muted); font-size: 16.5px; line-height: 1.6; margin: 0; }
+.page-hero .hero-actions { margin-top: 30px; }
+
+.page-hero-photo { position: relative; border-radius: 3px; overflow: hidden; aspect-ratio: 4 / 3; }
+.page-hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.page-hero-photo .credit { position: absolute; left: 12px; bottom: 12px; font-size: 11px; color: rgba(255,255,255,.9); background: rgba(19,29,51,.55); padding: 3px 8px; border-radius: 2px; }
+.page-hero-photo .credit a { color: #fff; }
+
+.section-eyebrow { color: #8f9ab3; font-weight: 700; letter-spacing: 0.1em; font-size: 12.5px; text-transform: uppercase; margin-bottom: 10px; }
+
+.area-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+.area-card { background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 30px 26px; display: flex; flex-direction: column; }
+.area-card .badge {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: rgba(255,138,0,0.1); border: 1px solid var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--teal-dark); font-weight: 700; font-size: 13px;
+  margin-bottom: 20px;
+}
+.area-card h3 { color: var(--navy); font-size: 18px; font-weight: 800; margin: 0 0 12px; }
+.area-card p { color: #5B6578; font-size: 14.5px; line-height: 1.55; margin: 0 0 24px; flex: 1; }
+.area-card a { color: var(--teal-dark); font-weight: 700; font-size: 13.5px; letter-spacing: 0.03em; text-transform: uppercase; text-decoration: none; }
+.area-card a:hover { color: var(--teal); }
+
+.benefits-dark { background: var(--navy); padding: 64px 0; }
+.benefits-dark h2 { color: #fff; font-size: clamp(22px, 2.6vw, 30px); font-weight: 800; margin: 0 0 32px; max-width: 920px; }
+.benefits-dark-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; max-width: 920px; }
+@media (max-width: 700px) { .benefits-dark-grid { grid-template-columns: 1fr; } }
+.benefit-dark-item { display: flex; gap: 14px; align-items: flex-start; }
+.benefit-dark-item .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); margin-top: 9px; flex-shrink: 0; }
+.benefit-dark-item span { color: #EAEEF6; font-size: 15.5px; line-height: 1.5; }
+
+.final-cta-photo { position: relative; padding: 96px 0; text-align: center; overflow: hidden; }
+.final-cta-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.final-cta-photo .overlay { position: absolute; inset: 0; background: rgba(20,29,49,0.88); }
+.final-cta-photo .credit { position: absolute; left: 20px; bottom: 16px; font-size: 11px; color: rgba(255,255,255,.75); z-index: 1; }
+.final-cta-photo .credit a { color: rgba(255,255,255,.9); }
+.final-cta-photo-content { position: relative; z-index: 1; }
+.final-cta-photo-content h2 { color: #fff; font-size: clamp(24px, 3.2vw, 36px); font-weight: 800; margin: 0 0 18px; max-width: 680px; margin-left: auto; margin-right: auto; text-wrap: pretty; }
+.final-cta-photo-content p { color: #EAEEF6; font-size: 16px; margin: 0 0 30px; }
+
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
+.team-card { background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 26px; display: flex; flex-direction: column; }
+.team-card h3 { color: var(--navy); font-size: 17px; font-weight: 800; margin: 0 0 8px; }
+.team-card .role-desc { color: #5B6578; font-size: 14px; line-height: 1.55; margin: 0 0 20px; }
+.team-avatar-placeholder {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--bg); border: 1px dashed var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: #b3bccb; font-size: 22px; margin-bottom: 14px;
+}
+.team-name-placeholder { color: #9aa4b5; font-weight: 700; font-size: 15px; font-style: italic; }
+.team-role-placeholder { color: #b3bccb; font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.03em; }
+
+.contact-links { display: flex; flex-direction: column; gap: 18px; margin: 0 0 34px; }
+.contact-link { display: inline-flex; align-items: center; gap: 12px; color: var(--navy); font-weight: 700; font-size: 16px; text-decoration: none; }
+.contact-link .icon-circle {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,138,0,0.12); border: 1px solid var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--teal-dark); font-size: 13px; font-weight: 800;
+  flex-shrink: 0;
+}
 
 /* ---------- Diagnóstico ---------- */
 
