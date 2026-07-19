@@ -40,4 +40,16 @@
     if (Math.abs(dy) > 50) go(current + (dy > 0 ? 1 : -1));
   }, { passive: true });
   render();
+
+  var navToggle = document.getElementById('slideNavToggle');
+  var slideNav = document.getElementById('slideNav');
+  if (navToggle && slideNav) {
+    navToggle.addEventListener('click', function () {
+      var open = slideNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    slideNav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { slideNav.classList.remove('open'); });
+    });
+  }
 })();

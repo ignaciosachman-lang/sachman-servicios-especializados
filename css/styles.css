@@ -80,8 +80,34 @@ header.site-header {
   font-size: 14px;
 }
 
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 4px;
+  font-size: 24px;
+  color: var(--navy);
+  cursor: pointer;
+}
+
 @media (max-width: 700px) {
-  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 24px 18px;
+    font-size: 15px;
+    z-index: 10;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 8px 0; }
 }
 
 .nav-links a {
@@ -802,7 +828,26 @@ body.landing-page { margin: 0; background: var(--navy-dark); }
 .slide-nav { display: flex; gap: 26px; }
 .slide-nav a { color: #EAEEF6; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .slide-nav a:hover { color: var(--teal); }
-@media (max-width: 860px) { .slide-nav { display: none; } }
+.nav-toggle-dark { display: none; background: none; border: none; padding: 4px; font-size: 22px; color: #fff; cursor: pointer; }
+@media (max-width: 860px) {
+  .nav-toggle-dark { display: block; }
+  .slide-nav {
+    display: none;
+    position: fixed;
+    top: 62px;
+    left: 6vw;
+    right: 6vw;
+    background: var(--navy-dark);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    z-index: 6;
+  }
+  .slide-nav.open { display: flex; }
+  .slide-nav a { padding: 8px 0; }
+}
 .counter { color: var(--text-muted); font-weight: 700; font-size: 14px; letter-spacing: .05em; font-variant-numeric: tabular-nums; }
 .dots { position: fixed; right: 5vw; top: 50%; transform: translateY(-50%); z-index: 5; display: flex; flex-direction: column; gap: 14px; }
 .dots button { width: 9px; height: 9px; padding: 0; border-radius: 50%; cursor: pointer; background: rgba(255,255,255,.35); border: none; transition: background .3s; }
