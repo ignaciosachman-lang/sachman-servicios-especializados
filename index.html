@@ -11,206 +11,109 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.44.0/tabler-icons.min.css">
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="landing-page">
 
-<header class="site-header">
-  <div class="container nav">
-    <a href="index.html" class="brand">
-      <span class="brand-mark">GS</span>
-      Grupo Sachman
-    </a>
-    <nav class="nav-links">
-      <a href="#problema">El problema</a>
-      <a href="#metodologia">Cómo trabajamos</a>
-    </nav>
-    <a class="btn btn-primary" href="diagnostico.html">Solicitar diagnóstico</a>
-  </div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-  <div class="container hero hero-center">
-    <h1 class="hero-headline">
-      <span class="line-1">Tu empresa no necesita más esfuerzo.</span>
-      <span class="line-2">Necesita un sistema.</span>
-    </h1>
-    <p class="hero-subtitle">Si todo depende de ti, estás operando sin estructura.</p>
-    <div class="hero-actions">
-      <a class="btn btn-whatsapp-outline" href="https://wa.me/524424528401?text=Hola%2C%20me%20gustar%C3%ADa%20hablar%20con%20un%20asesor%20de%20Grupo%20Sachman%2C%20sin%20pasar%20por%20el%20diagn%C3%B3stico." target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Hablar con un asesor</a>
-    </div>
-  </div>
+<header class="brand-bar">
+  <div class="brand"><span class="dot"></span>Grupo Sachman</div>
+  <div class="counter" id="counter">01 — 05</div>
 </header>
 
-<div class="trust-bar">
-  <div class="container">
-    <div class="trust-item"><span class="dot"></span> Registro REPSE vigente ante la STPS</div>
-    <div class="trust-item"><span class="dot"></span> México · Estados Unidos</div>
-    <div class="trust-item"><span class="dot"></span> Modalidad in-house o remota</div>
+<div class="dots" id="dots"></div>
+
+<div class="nav-arrows">
+  <button id="prevBtn" aria-label="Anterior">↑</button>
+  <button id="nextBtn" aria-label="Siguiente">↓</button>
+</div>
+
+<div class="slides-viewport">
+  <div class="slides-track" id="track">
+
+    <section class="slide">
+      <div class="slide-bg" style="background-image:url('img/slide1-hero.jpg')"></div>
+      <div class="slide-overlay bottom"></div>
+      <div class="credit">Foto: Vitaly Gariev / Unsplash</div>
+      <div class="slide-content bottom">
+        <div class="eyebrow">Grupo Sachman</div>
+        <h1>Tu empresa no necesita más esfuerzo.<br>Necesita estructura.</h1>
+        <p class="lead">Si todo depende de ti, estás operando sin soporte.</p>
+        <a class="cta-btn" href="diagnostico.html">Solicitar diagnóstico</a>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-bg" style="background-image:url('img/slide2-soluciones.jpg')"></div>
+      <div class="slide-overlay side"></div>
+      <div class="credit">Foto: Vitaly Gariev / Unsplash</div>
+      <div class="slide-content">
+        <div class="eyebrow">Siete áreas, un solo equipo</div>
+        <h2>Instalamos el área que te falta o reforzamos la que ya tienes.</h2>
+        <div class="areas-grid">
+          <div class="area"><div class="mono">CO</div><div class="name">Contabilidad</div></div>
+          <div class="area"><div class="mono">AD</div><div class="name">Administración</div></div>
+          <div class="area"><div class="mono">RH</div><div class="name">RRHH</div></div>
+          <div class="area"><div class="mono">IT</div><div class="name">Sistemas/IT</div></div>
+          <div class="area"><div class="mono">CM</div><div class="name">Compras</div></div>
+          <div class="area"><div class="mono">VT</div><div class="name">Ventas / Representaciones</div></div>
+          <div class="area"><div class="mono">MK</div><div class="name">Marketing y Redes</div></div>
+        </div>
+        <a class="cta-btn" href="diagnostico.html">Ver el diagnóstico</a>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-bg" style="background-image:url('img/slide3-equipo.jpg')"></div>
+      <div class="slide-overlay bottom"></div>
+      <div class="credit">Foto: Vitaly Gariev / Unsplash</div>
+      <div class="slide-content bottom">
+        <div class="eyebrow">Cómo operamos</div>
+        <h2>Un grupo de expertos de primer nivel, con procesos y sistemas propios.</h2>
+        <div class="badge-row">
+          <div class="badge-pill">Registro REPSE vigente ante la STPS</div>
+          <div class="badge-pill">Diseñamos procesos sencillos, escalables y auditables</div>
+          <div class="badge-pill">Implementamos sistemas de última generación</div>
+          <div class="badge-pill">In-house o remoto · México · Estados Unidos</div>
+        </div>
+        <a class="cta-btn" href="https://wa.me/524424528401?text=Hola%2C%20me%20gustar%C3%ADa%20hablar%20con%20un%20asesor%20de%20Grupo%20Sachman%2C%20sin%20pasar%20por%20el%20diagn%C3%B3stico." target="_blank" rel="noopener">Hablar con un asesor</a>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-bg" style="background-image:url('img/slide4-proceso.jpg')"></div>
+      <div class="slide-overlay side"></div>
+      <div class="credit">Foto: Vitaly Gariev / Unsplash</div>
+      <div class="slide-content">
+        <div class="eyebrow">Nuestro proceso</div>
+        <h2>Diagnóstico → Diseño → Implementación → Operación.</h2>
+        <div class="steps-grid">
+          <div><div class="num">01</div><div class="title">Diagnóstico</div><div class="desc">Mapeamos dónde está el riesgo y la fuga de recursos.</div></div>
+          <div><div class="num">02</div><div class="title">Diseño</div><div class="desc">Armamos el sistema a la medida de tu operación.</div></div>
+          <div><div class="num">03</div><div class="title">Implementación</div><div class="desc">Instalamos procesos, gente y tecnología en semanas.</div></div>
+          <div><div class="num">04</div><div class="title">Operación</div><div class="desc">El sistema corre solo. Tú decides, nosotros ejecutamos.</div></div>
+        </div>
+        <a class="cta-btn" href="diagnostico.html">Solicitar diagnóstico</a>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-bg" style="background-image:url('img/slide5-cta.jpg')"></div>
+      <div class="slide-overlay bottom"></div>
+      <div class="credit">Foto: Ambre Estève / Unsplash</div>
+      <div class="slide-content bottom">
+        <h2>¿Listo para recuperar el control de tu operación?</h2>
+        <p class="lead">El diagnóstico es gratuito y no te compromete a nada.</p>
+        <div class="cta-row">
+          <a class="cta-btn" href="diagnostico.html">Quiero mi diagnóstico gratuito</a>
+          <a class="cta-btn outline" href="https://wa.me/524424528401?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Grupo%20Sachman" target="_blank" rel="noopener">Hablar por WhatsApp</a>
+        </div>
+        <p class="slide-footnote">Grupo Sachman &middot; servicios especializados de personal con registro REPSE vigente &middot; México / Estados Unidos &middot; <a href="mailto:ignacio.sachman@livcampus.com">ignacio.sachman@livcampus.com</a></p>
+      </div>
+    </section>
+
   </div>
 </div>
 
-<section id="problema" class="senales">
-  <div class="container senales-grid">
-    <div class="senales-head">
-      <h2>Tu empresa está creciendo, pero tú sigues resolviendo todo<span class="soft">…</span> no estás escalando. <span class="accent">Estás atrapado.</span></h2>
-      <p class="senales-lead">Estas son las señales</p>
-
-      <div class="senal-card"><span class="num">01</span><p>No controlas tu dinero. Solo lo descubres cuando ya hay problemas.</p></div>
-      <div class="senal-card"><span class="num">02</span><p>Tu operación depende de ti o de unos pocos. Sin ellos, tu empresa se detiene.</p></div>
-      <div class="senal-card"><span class="num">03</span><p>No diriges tu negocio. Lo sobrevives. Pasas tu tiempo corrigiendo lo que debería funcionar solo.</p></div>
-
-      <p class="senales-punch">Contratar más gente no arregla esto. Solo lo hace <strong>más caro.</strong></p>
-    </div>
-
-    <div class="dash-wrap">
-      <div class="dash-panel">
-        <div class="dash-top">
-          <span class="dash-title">Flujo de caja &middot; últimos 30 días</span>
-          <span class="dash-live"><span class="dot"></span> Sin visibilidad</span>
-        </div>
-        <div class="dash-chart">
-          <svg viewBox="0 0 400 150" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#c94545" stop-opacity="0.35"/>
-                <stop offset="100%" stop-color="#c94545" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <line x1="0" y1="30" x2="400" y2="30" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
-            <line x1="0" y1="75" x2="400" y2="75" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
-            <line x1="0" y1="120" x2="400" y2="120" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
-            <path d="M0,60 L40,45 L80,90 L120,55 L160,100 L200,70 L240,115 L280,80 L320,125 L360,95 L400,130 L400,150 L0,150 Z" fill="url(#areaGrad)"/>
-            <polyline points="0,60 40,45 80,90 120,55 160,100 200,70 240,115 280,80 320,125 360,95 400,130" fill="none" stroke="#e2704f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="400" cy="130" r="4" fill="#e2704f"/>
-          </svg>
-        </div>
-        <div class="dash-stats">
-          <div class="dash-stat"><div class="v">47</div><div class="l">días sin conciliar</div></div>
-          <div class="dash-stat"><div class="v">3</div><div class="l">decisiones a ciegas esta semana</div></div>
-        </div>
-      </div>
-      <p class="dash-caption">Así se ve tu operación cuando nadie más puede leerla por ti.</p>
-    </div>
-  </div>
-</section>
-
-<section id="solucion" class="section-alt">
-  <div class="container">
-    <div class="sistema-2col">
-      <div class="sistema-copy">
-        <h2 class="section-title">No vendemos servicios sueltos. Instalamos un sistema.</h2>
-        <p class="lead">Somos el equipo operativo externo que se instala dentro de tu empresa: procesos, gente y tecnología ya probados, con visibilidad real sobre lo que hoy se está fugando.</p>
-        <div class="sistema-bullets">
-          <div class="sistema-bullet"><span class="dot"></span><span><strong>Dinero:</strong> errores fiscales, pagos duplicados y contratos sin seguimiento salen de tu utilidad, no de un presupuesto aparte.</span></div>
-          <div class="sistema-bullet"><span class="dot"></span><span><strong>Tiempo:</strong> cada hora resolviendo problemas operativos es una hora que no dedicaste a vender, negociar o crecer.</span></div>
-          <div class="sistema-bullet"><span class="dot"></span><span><strong>Control:</strong> decides a ciegas cuando no tienes visibilidad real de tu operación.</span></div>
-          <div class="sistema-bullet"><span class="dot"></span><span><strong>Riesgo:</strong> lo fiscal, laboral o de cumplimiento mal llevado no avisa antes de volverse un problema legal.</span></div>
-        </div>
-        <p class="lead-note" style="font-size:14px; color:var(--text-muted); margin:0 0 20px;"><strong style="color:var(--teal-dark);">No somos una empresa de outsourcing.</strong> Servicios especializados de alto nivel, sin los riesgos de la subcontratación genérica — tú eliges in-house, remoto o híbrido.</p>
-        <div class="repse-pill"><span class="dot"></span> Registro REPSE vigente ante la STPS</div>
-      </div>
-      <div class="sistema-mockup">
-        <img src="img/dashboard-mockup.svg" alt="Vista del panel operativo que recibe cada cliente al completar su diagnóstico">
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="metodologia">
-  <div class="container">
-    <h2 class="section-title">Cómo instalamos el sistema en tu empresa</h2>
-    <p class="section-sub">Cuatro etapas, de diagnóstico a operación — sin que tú tengas que administrar el proceso.</p>
-    <div class="timeline">
-      <div class="timeline-line"></div>
-      <div class="timeline-step">
-        <span class="timeline-dot">01</span>
-        <h3>Diagnóstico</h3>
-        <p>Mapeamos dónde está el riesgo, la fuga de dinero y los cuellos de botella de tu operación actual.</p>
-      </div>
-      <div class="timeline-step">
-        <span class="timeline-dot">02</span>
-        <h3>Diseño</h3>
-        <p>Armamos el sistema operativo a la medida: qué áreas, con qué alcance y con qué nivel de control necesitas.</p>
-      </div>
-      <div class="timeline-step">
-        <span class="timeline-dot">03</span>
-        <h3>Implementación</h3>
-        <p>Instalamos procesos, gente y tecnología en semanas — no meses, y sin detener tu operación actual.</p>
-      </div>
-      <div class="timeline-step">
-        <span class="timeline-dot">04</span>
-        <h3>Operación</h3>
-        <p>El sistema corre solo. Tú recibes reportes y decides; nosotros ejecutamos y damos seguimiento.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="beneficios" class="section-alt">
-  <div class="container">
-    <h2 class="section-title">Lo que obtienes — no lo que hacemos</h2>
-    <p class="section-sub">El resultado de tener un sistema operativo externo, no una lista de tareas contratadas.</p>
-    <div class="beneficios-row">
-      <div class="beneficio-item">
-        <div class="icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
-        <div><h3>Control operativo total</h3><p>Sin construir ni supervisar un equipo interno para lograrlo.</p></div>
-      </div>
-      <div class="beneficio-item">
-        <div class="icon"><i class="ti ti-chart-line" aria-hidden="true"></i></div>
-        <div><h3>Visibilidad financiera real</h3><p>Información al día, no al cierre de mes ni bajo pedido.</p></div>
-      </div>
-      <div class="beneficio-item">
-        <div class="icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
-        <div><h3>Continuidad garantizada</h3><p>Un sistema escalable que no depende de que una sola persona no falte.</p></div>
-      </div>
-      <div class="beneficio-item">
-        <div class="icon"><i class="ti ti-gavel" aria-hidden="true"></i></div>
-        <div><h3>Cumplimiento sin sorpresas</h3><p>Operamos con registro REPSE vigente — fiscal, laboral y legal, resuelto antes de que se vuelva un problema.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Resultados: oculto hasta tener casos reales medibles (evitamos publicar placeholders vacíos).
-<section id="prueba-social">
-  <div class="container">
-    <h2 class="section-title">Resultados</h2>
-    <p class="section-sub">Casos y métricas reales de empresas que ya operan con este sistema.</p>
-    <div class="resultados-grid">
-      <div class="resultado-slot">
-        <p class="slot-label">Caso 01 · Empresa</p>
-        <p class="slot-hint">Sector y tamaño de la empresa, área implementada, resultado medible (ej. tiempo, ahorro, riesgo eliminado).</p>
-      </div>
-      <div class="resultado-slot">
-        <p class="slot-label">Caso 02 · Empresa</p>
-        <p class="slot-hint">Sector y tamaño de la empresa, área implementada, resultado medible.</p>
-      </div>
-      <div class="resultado-slot">
-        <p class="slot-label">Caso 03 · Empresa</p>
-        <p class="slot-hint">Sector y tamaño de la empresa, área implementada, resultado medible.</p>
-      </div>
-    </div>
-    <p class="resultados-note">Se completa con datos reales antes de publicar — evitamos inventar cifras o citas.</p>
-  </div>
-</section>
--->
-
-<section class="cta-final cta-final-photo">
-  <img src="img/cta-final.jpg" alt="" aria-hidden="true">
-  <div class="cta-final-overlay"></div>
-  <div class="container cta-final-content">
-    <h2>¿Listo para recuperar el control de tu operación?</h2>
-    <p>El diagnóstico es gratuito y no te compromete a nada. El costo real es seguir operando sin control.</p>
-    <div class="cta-final-actions">
-      <a class="btn btn-primary" href="diagnostico.html">Quiero mi diagnóstico gratuito</a>
-      <a class="btn btn-outline" href="https://wa.me/524424528401?text=Hola%2C%20me%20gustar%C3%ADa%20hablar%20con%20un%20asesor%20de%20Grupo%20Sachman%2C%20sin%20pasar%20por%20el%20diagn%C3%B3stico." target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Hablar con un asesor</a>
-    </div>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="container">
-    <p>Grupo Sachman &middot; sistema operativo externo para empresas &middot; Registro REPSE vigente &middot; Modalidad in-house o remota &middot; México / Estados Unidos</p>
-    <p><a href="mailto:ignacio.sachman@livcampus.com">ignacio.sachman@livcampus.com</a> &middot; <a href="https://wa.me/524424528401?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20Grupo%20Sachman" target="_blank" rel="noopener" class="footer-whatsapp">WhatsApp</a> &middot; Landing en construcción, sujeta a validación de marca y prueba social real.</p>
-  </div>
-</footer>
-
+<script src="js/landing-slides.js"></script>
 </body>
 </html>
