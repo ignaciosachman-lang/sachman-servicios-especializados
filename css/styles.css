@@ -845,15 +845,19 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 .diag-findings li { margin-bottom: 6px; }
 
 .diag-ok-note { font-size: 13px; color: var(--text-muted); margin: 0; }
+.diag-ok-note i { color: var(--teal-dark); }
 
-.diag-cost-box {
-  border-top: 1px solid var(--border);
-  margin-top: 12px;
-  padding-top: 12px;
+.area-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
 }
-.diag-cost-box p { margin: 0 0 4px; font-size: 13px; }
-.diag-cost-compare { color: var(--text-muted); font-size: 12px; }
-.diag-savings { color: var(--teal-dark); font-weight: 700; }
+.area-badge.deep { background: var(--teal-soft); color: var(--teal-dark); }
+.area-badge.quick { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
 
 .diag-summary-box {
   background: var(--navy);
@@ -902,56 +906,38 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 }
 .compare-hero h2 { color: #fff; font-size: 21px; }
 
-.compare-grid {
+.dimension-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
-@media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .dimension-grid { grid-template-columns: 1fr 1fr; } }
 
-.compare-card {
-  border-radius: var(--radius-lg);
-  padding: 20px 20px 22px;
+.dimension-tile {
+  background: rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  padding: 16px 16px 14px;
 }
-.compare-card.chaos { background: #3a1414; }
-.compare-card.order { background: rgba(255,138,0,0.16); border: 1px solid rgba(255,138,0,0.4); }
-
-.compare-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 8px; }
-.compare-card.chaos .compare-label { color: #f0a3a3; }
-.compare-card.order .compare-label { color: var(--teal); }
-
-.compare-amount { font-size: 32px; font-weight: 700; margin: 0 0 10px; line-height: 1; }
-.compare-amount span { font-size: 14px; font-weight: 500; opacity: 0.7; margin-left: 4px; }
-.compare-card.chaos .compare-amount { color: #ffb3b3; }
-.compare-card.order .compare-amount { color: #fff; }
-
-.compare-sub { font-size: 12.5px; color: #cdd8e3; margin: 0; line-height: 1.5; min-height: 34px; }
-
-.chaos-visual { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
-.chaos-note {
-  font-size: 11px; color: #f0a3a3; background: rgba(240,163,163,0.12); border: 1px dashed rgba(240,163,163,0.4);
-  padding: 4px 9px; border-radius: 6px; width: fit-content;
+.dt-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #cdd8e3; margin: 0 0 8px; }
+.dt-value { font-size: 22px; font-weight: 700; color: #fff; margin: 0 0 4px; line-height: 1.1; }
+.dt-value span { font-size: 12px; font-weight: 500; opacity: 0.7; margin-left: 3px; }
+.dt-value.dt-chip {
+  display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; margin-bottom: 6px;
 }
-.chaos-note.n1 { transform: rotate(-1deg); }
-.chaos-note.n2 { transform: rotate(0.8deg); margin-left: 10px; }
-.chaos-note.n3 { transform: rotate(-0.5deg); }
+.dt-note { font-size: 11.5px; color: #a8b4c4; margin: 0; line-height: 1.4; }
 
-.mini-dashboard { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
-.mini-kpi {
-  display: flex; justify-content: space-between; align-items: baseline;
-  background: rgba(255,255,255,0.06); border-radius: 6px; padding: 6px 10px;
+.signals-box {
+  max-width: 780px; margin: 0 auto 32px;
+  background: var(--teal-soft); border: 1px solid rgba(255,138,0,0.4);
+  border-radius: var(--radius-lg); padding: 18px 20px;
 }
-.mk-label { font-size: 11px; color: #cdd8e3; }
-.mk-value { font-size: 13px; font-weight: 700; color: var(--teal); font-family: ui-monospace, Consolas, monospace; }
-.mini-spark { width: 100%; height: 34px; margin-top: 2px; }
-.mini-spark polyline { stroke: var(--teal); }
-.mini-spark circle { fill: var(--teal); }
-
-.compare-delta {
-  text-align: center; font-size: 15px; color: #fff; margin: 20px 0 0;
-  padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15);
+.signals-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--teal-dark); margin: 0 0 10px;
 }
-.compare-delta strong { color: var(--teal); }
+.signals-line { font-size: 13.5px; color: var(--text); line-height: 1.55; margin: 0 0 6px; }
+.signals-line:last-child { margin-bottom: 0; }
 
 .risk-alert {
   display: flex; gap: 10px; align-items: flex-start; margin-top: 16px;
@@ -961,22 +947,6 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 .risk-alert i { color: #fdc98a; font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 .risk-alert p { margin: 0; font-size: 12.5px; color: #fde4c4; line-height: 1.55; }
 
-.exec-reading {
-  margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15);
-}
-.exec-reading-title {
-  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--teal); margin: 0 0 8px;
-}
-.exec-reading > p { font-size: 13.5px; line-height: 1.6; color: #dbe4ec; margin: 0 0 14px; }
-.exec-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.exec-stat {
-  background: rgba(255,255,255,0.06); border-radius: var(--radius); padding: 12px 14px;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.exec-stat .es-value { font-size: 20px; font-weight: 700; color: #fff; font-family: ui-monospace, Consolas, monospace; }
-.exec-stat .es-label { font-size: 11.5px; color: #cdd8e3; line-height: 1.4; }
-
 .wa-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .wa-cta-row .btn i { margin-right: 6px; }
 .wa-note { text-align: center; margin: 18px 0 0; font-size: 13.5px; }
@@ -985,7 +955,6 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
 .wa-note i { font-size: 16px; }
 
 .footer-whatsapp { color: #25D366 !important; font-weight: 600; }
-@media (max-width: 640px) { .exec-stats { grid-template-columns: 1fr; } }
 
 .light-hero { max-width: 620px; text-align: left; }
 .light-pain {

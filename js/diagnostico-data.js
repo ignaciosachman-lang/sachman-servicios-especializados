@@ -414,19 +414,28 @@ function riskLevelFromScore(avg) {
   return "Bajo";
 }
 
-// answers: { [questionId]: optionIndex }
-function computeAreaResult(area, answers) {
+// Evalúa un área usando solo un subconjunto de sus preguntas (para el flujo adaptativo:
+// áreas marcadas como dolorosas se evalúan con TODAS sus preguntas; áreas no marcadas,
+// solo con la pregunta rápida + la de la ronda bonus).
+// answers: { [questionId]: optionIndex }, questionIds: array de ids a considerar
+function computeAreaResultForQuestions(area, answers, questionIds) {
   let total = 0;
   const findings = [];
-  area.questions.forEach(function (q) {
+  const qs = area.questions.filter(function (q) { return questionIds.indexOf(q.id) >= 0; });
+  qs.forEach(function (q) {
     const idx = answers[q.id];
     const opt = typeof idx === "number" ? q.options[idx] : null;
     const risk = opt ? opt.risk : 0;
     total += risk;
     if (opt && opt.finding && risk > 0) findings.push(opt.finding);
   });
-  const avg = area.questions.length ? total / area.questions.length : 0;
+  const avg = qs.length ? total / qs.length : 0;
   const level = riskLevelFromScore(avg);
   const recommend = level !== "Bajo";
   return { areaId: area.id, avg: avg, level: level, findings: findings, recommend: recommend };
+}
+
+// answers: { [questionId]: optionIndex } -- evalúa con todas las preguntas del área.
+function computeAreaResult(area, answers) {
+  return computeAreaResultForQuestions(area, answers, area.questions.map(function (q) { return q.id; }));
 }
