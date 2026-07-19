@@ -528,6 +528,41 @@ form.contact-form input, form.contact-form select, .contact-form input, .contact
   border-bottom: 1px solid var(--border);
 }
 
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ---------- Soluciones ---------- */
+
+.soluciones-benefits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px 32px;
+}
+.soluciones-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.soluciones-benefits li i {
+  flex-shrink: 0;
+  color: var(--teal-dark);
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.soluciones-final-cta {
+  text-align: center;
+  max-width: 560px;
+}
+.soluciones-final-cta h2 { font-size: 26px; margin: 0 0 10px; }
+.soluciones-final-cta p { color: var(--text-muted); margin: 0 0 24px; }
+.soluciones-final-cta .hero-actions { justify-content: center; }
+
 /* ---------- Diagnóstico ---------- */
 
 .diag-progress-wrap { margin-bottom: 24px; }
